@@ -19,8 +19,11 @@ def get_sqlite_path(db_id: str, db_dir: Path= DATABASES_DIR) -> Path:
     return None
 
 def get_table_info(db_id:str, table_name:str, db_dir: Path=DATABASES_DIR) -> str:
+    sqlite_path = get_sqlite_path(db_id, db_dir)
+    if sqlite_path is None:
+        return None
     try:
-        with closing(sqlite3.connect(get_sqlite_path(db_id, db_dir))) as conn:
+        with closing(sqlite3.connect(sqlite_path)) as conn:
             row = conn.execute(f"select sql from sqlite_master where type='table' and name='{table_name}'").fetchone()
             if row is None:
                 return None
@@ -29,11 +32,15 @@ def get_table_info(db_id:str, table_name:str, db_dir: Path=DATABASES_DIR) -> str
         return None
 
 
+
 def get_table_list(db_id: str, db_dir: Path=DATABASES_DIR) -> list[str]:
     """Get list of all table names"""
     table_list_query = "select name from sqlite_master where type='table' and name not like 'sqlite_%' order by name"
+    sqlite_path = get_sqlite_path(db_id, db_dir)
+    if sqlite_path is None:
+        return []
     try:
-        with closing(sqlite3.connect(get_sqlite_path(db_id, db_dir))) as conn:
+        with closing(sqlite3.connect(sqlite_path)) as conn:
             cursor = conn.execute(table_list_query).fetchall()
             tables = [row[0] for row in cursor] 
             return tables

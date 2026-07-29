@@ -37,8 +37,8 @@ def execute_query(
     decides how to present or use the result.
     """
     path = get_sqlite_path(db_id, db_dir)
-    if not path.exists():
-        raise sqlite3.Error(f"Database file not found: {path}")
+    if path is None or not path.exists():
+        raise sqlite3.Error(f"Database file not found for db_id '{db_id}' in {db_dir}")
 
     # uri = f"file:{path}?mode=ro"
     with closing(sqlite3.connect(path, timeout=timeout)) as conn:

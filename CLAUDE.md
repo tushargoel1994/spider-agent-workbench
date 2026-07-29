@@ -21,11 +21,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This project uses **uv** for dependency and environment management (`.python-version` pins 3.11, `uv.lock` is checked in).
 
 - Add a dependency: `uv add <package>`
+- Add a dev-only dependency: `uv add --dev <package>`
 - Run any script inside the project's venv: `uv run <script>.py`
+- Run the test suite: `uv run pytest`
+- Run a single test file: `uv run pytest tests/test_guardrails.py -q`
 - Pull the Spider dataset split from HF into local xlsx cache: `uv run scripts/download_hf_dataset_cache.py`
 - Requires a `.env` at the repo root with `ANTHROPIC_API_KEY=...` (loaded via `pydantic-settings` in `config.py`)
 
-There is no lint, format, or pytest-style test tooling configured yet (no ruff/pytest config in `pyproject.toml`). If asked to add tests or linting, check `pyproject.toml` first since this file will go stale. The closest thing to a test today is `scripts/phase_1_test.py`, which runs the agent end-to-end and scores it via `eval/sql_result_scorer.py`.
+There is no lint or format tooling configured yet (no ruff config in `pyproject.toml`). If asked to add linting, check `pyproject.toml` first since this file will go stale. `scripts/phase_1_test.py` (runs the agent end-to-end and scores it via `eval/sql_result_scorer.py`) is a separate manual eval script, not part of the `pytest` suite — see the Testing section below for that.
+
+## Testing
+
+- Tests live under `tests/` and run via `uv run pytest` — `pytest` is a dev dependency (`[dependency-groups] dev` in `pyproject.toml`), configured with `testpaths = ["tests"]` under `[tool.pytest.ini_options]`.
+- `tests/conftest.py` provides `db_dir`/`db_id` fixtures: a throwaway fixture sqlite database (`students`/`courses` tables, seeded with a few rows) built fresh in a `tmp_path` per test, so tests never depend on the gitignored `data/` dataset.
+- Current coverage: `tests/test_guardrails.py`, `tests/test_schema.py`, `tests/test_tools.py`, `tests/test_executor.py`. `agent.py`, `loaders.py`, `utils.py`, and `eval/` have no tests yet.
+- **Write the test before writing the implementation.** For any new function, guardrail, or bugfix: add (or update) a failing test in the relevant `tests/test_*.py` file first, run `uv run pytest` to confirm it fails for the expected reason, then write the minimal code to make it pass. This applies to bugfixes too — reproduce the bug as a failing test before patching it.
 
 ## What this project is
 
@@ -61,6 +71,7 @@ src/spider_agent_workbench/
   eval/sql_result_scorer.py   # score_query(): predicted vs gold SQL, binary EX-style match; importable from notebooks and scripts
   eval/metrics.py, eval/runner.py   # stubs — aggregate EX/EM scoring + batch runner not yet built
 scripts/            # one-off/setup scripts (dataset download, connection smoke tests, phase_1_test.py)
+tests/              # pytest suite — conftest.py fixtures + test_guardrails.py, test_schema.py, test_tools.py, test_executor.py
 docs/reports/       # phase-by-phase progress notes (phase_0.md, phase_1.md, ...)
 ```
 
