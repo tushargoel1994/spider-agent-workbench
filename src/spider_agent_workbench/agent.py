@@ -19,7 +19,7 @@ from spider_agent_workbench import tools
 from spider_agent_workbench.paths import PROMPTS_DIR
 
 
-DEFAULT_PROMPT_VERSION = "prompt_v1"
+DEFAULT_PROMPT_VERSION = "prompt_v2"
 DEFAULT_MODEL = "claude-sonnet-4-6"
 DEFAULT_MAX_TURNS = 10
 

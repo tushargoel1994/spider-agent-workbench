@@ -6,9 +6,12 @@ execute cannot.
 """
 
 from __future__ import annotations
-import re
 from dataclasses import dataclass
 from pathlib import Path
+
+import sqlglot
+from sqlglot import exp
+from sqlglot.tokens import TokenType
 
 from spider_agent_workbench.paths import DATABASES_DIR
 from spider_agent_workbench.schema import get_table_list
@@ -30,8 +33,8 @@ FORBIDDEN_KEYWORDS = (
 )
 
 MAX_QUERY_CHARS = 2000
-
-_TABLE_REF_RE = re.compile(r"\b(?:FROM|JOIN)\s+([`\"\[]?\w+[`\"\]]?)", re.IGNORECASE)
+MAX_TABLE_JOINS = 5
+MAX_SUBQUERY_DEPTH = 3
 
 
 @dataclass(frozen=True)
@@ -41,9 +44,27 @@ class GuardrailResult:
 
 
 def check_read_only(sql: str) -> GuardrailResult:
-    """Reject anything that isn't a read-only SELECT/CTE/EXPLAIN statement."""
-    for keyword in FORBIDDEN_KEYWORDS:
-        if re.search(rf"\b{keyword}\b", sql, re.IGNORECASE):
+    """Reject anything that isn't a read-only SELECT/CTE/EXPLAIN statement.
+
+    Tokenizes with sqlglot instead of regexing the raw text so a forbidden
+    word inside a quoted string literal (data, not a command) isn't mistaken
+    for the keyword itself — sqlglot's tokenizer keeps string literals as a
+    single STRING token regardless of what text they contain.
+    """
+    try:
+        tokens = sqlglot.tokenize(sql, read="sqlite")
+    except Exception:
+        # Malformed SQL isn't this check's job to reject — let it fall through
+        # to execution, where sqlite reports the real syntax error.
+        return GuardrailResult(ok=True)
+
+    for token in tokens:
+        if token.token_type == TokenType.STRING:
+            continue
+        keyword = token.token_type.name
+        if keyword not in FORBIDDEN_KEYWORDS:
+            keyword = token.text.upper()
+        if keyword in FORBIDDEN_KEYWORDS:
             return GuardrailResult(
                 ok=False,
                 reason=f"Rejected: '{keyword}' is not allowed. Only read-only SELECT queries are permitted.",
@@ -63,9 +84,16 @@ def check_query_length(sql: str, max_chars: int = MAX_QUERY_CHARS) -> GuardrailR
 
 def check_schema_tables(db_id: str, sql: str, db_dir: Path = DATABASES_DIR) -> GuardrailResult:
     """Reject queries that reference tables not present in this db_id's schema."""
+    try:
+        parsed = sqlglot.parse_one(sql, read="sqlite")
+    except sqlglot.errors.ParseError:
+        # Malformed SQL isn't this check's job to reject — let it fall through
+        # to execution, where sqlite reports the real syntax error.
+        return GuardrailResult(ok=True)
+
     available = get_table_list(db_id, db_dir)
     available_lower = {t.lower() for t in available}
-    referenced = {m.strip("`\"[]") for m in _TABLE_REF_RE.findall(sql)}
+    referenced = {t.name for t in parsed.find_all(exp.Table)}
 
     unknown = sorted(t for t in referenced if t.lower() not in available_lower)
     if unknown:
@@ -78,10 +106,89 @@ def check_schema_tables(db_id: str, sql: str, db_dir: Path = DATABASES_DIR) -> G
         )
     return GuardrailResult(ok=True)
 
+def check_num_joins(sql: str, max_join: int = MAX_TABLE_JOINS) -> GuardrailResult:
+    """Ensure there are no more than max_join JOINs in the query, counted via sqlglot's parsed AST."""
+    try:
+        parsed = sqlglot.parse_one(sql, read="sqlite")
+    except sqlglot.errors.ParseError:
+        # Malformed SQL isn't this check's job to reject — let it fall through
+        # to execution, where sqlite reports the real syntax error.
+        return GuardrailResult(ok=True)
+
+    num_joins = len(list(parsed.find_all(exp.Join)))
+    if num_joins > max_join:
+        return GuardrailResult(
+            ok=False,
+            reason=f"Rejected: query has {num_joins} JOINs, exceeds the {max_join}-join limit.",
+        )
+    return GuardrailResult(ok=True)
+
+
+def _direct_child_selects(select: exp.Select) -> list[exp.Select]:
+    """Selects nested exactly one level below `select` (i.e. not inside a further-nested
+    select, and not inside a CTE definition, which is scored as its own independent root)."""
+    children = []
+    for node in select.find_all(exp.Select):
+        if node is select:
+            continue
+        ancestor = node.parent
+        crossed_cte = False
+        while ancestor is not None and not isinstance(ancestor, exp.Select):
+            if isinstance(ancestor, exp.With):
+                crossed_cte = True
+                break
+            ancestor = ancestor.parent
+        if not crossed_cte and ancestor is select:
+            children.append(node)
+    return children
+
+
+def _select_depth(select: exp.Select) -> int:
+    """0 for a select with no nested subqueries; otherwise 1 + the deepest child branch
+    (siblings at the same level don't add up, only the deepest one counts)."""
+    children = _direct_child_selects(select)
+    if not children:
+        return 0
+    return 1 + max(_select_depth(child) for child in children)
+
+
+def check_subquery_depth(sql: str, max_depth: int = MAX_SUBQUERY_DEPTH) -> GuardrailResult:
+    """Reject queries whose subqueries nest deeper than max_depth.
+
+    Each CTE body is scored as its own independent root alongside the main query body,
+    so using WITH isn't penalized by itself, but a CTE that itself nests too deeply is
+    still rejected.
+    """
+    try:
+        parsed = sqlglot.parse_one(sql, read="sqlite")
+    except sqlglot.errors.ParseError:
+        # Malformed SQL isn't this check's job to reject — let it fall through
+        # to execution, where sqlite reports the real syntax error.
+        return GuardrailResult(ok=True)
+
+    root_select = parsed if isinstance(parsed, exp.Select) else parsed.find(exp.Select)
+    if root_select is None:
+        return GuardrailResult(ok=True)
+
+    roots = [root_select]
+    with_clause = root_select.args.get("with_")
+    if with_clause is not None:
+        for cte in with_clause.expressions:
+            if isinstance(cte.this, exp.Select):
+                roots.append(cte.this)
+
+    depth = max(_select_depth(root) for root in roots)
+    if depth > max_depth:
+        return GuardrailResult(
+            ok=False,
+            reason=f"Rejected: query nests subqueries {depth} levels deep, exceeds the {max_depth}-level nesting limit.",
+        )
+    return GuardrailResult(ok=True)
+
 
 def validate_sql(db_id: str, sql: str, db_dir: Path = DATABASES_DIR) -> GuardrailResult:
     """Run all guardrail checks in order, short-circuiting on the first failure."""
-    for check in (check_read_only, check_query_length):
+    for check in (check_read_only, check_query_length, check_num_joins, check_subquery_depth):
         result = check(sql)
         if not result.ok:
             return result

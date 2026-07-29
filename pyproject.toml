@@ -12,6 +12,7 @@ dependencies = [
     "pandas>=3.0.5",
     "pydantic-settings>=2.14.2",
     "python-dotenv>=1.2.2",
+    "sqlglot>=30.14.0",
 ]
 
 [build-system]
@@ -20,3 +21,11 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.target.wheel]
 packages = ["src/spider_agent_workbench"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
