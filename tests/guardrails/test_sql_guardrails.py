@@ -1,6 +1,6 @@
 import pytest
 
-from spider_agent_workbench.guardrails import (
+from spider_agent_workbench.guardrails.sql_guardrails import (
     FORBIDDEN_KEYWORDS,
     MAX_QUERY_CHARS,
     MAX_SUBQUERY_DEPTH,

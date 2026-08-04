@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from spider_agent_workbench.executor import execute_query
-from spider_agent_workbench.guardrails import validate_sql
+from spider_agent_workbench.guardrails.sql_guardrails import validate_sql
 from spider_agent_workbench.paths import DATABASES_DIR
 
 # Large enough that Spider's dev/train databases never get row-truncated —

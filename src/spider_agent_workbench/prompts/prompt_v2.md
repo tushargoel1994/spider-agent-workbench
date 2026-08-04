@@ -19,6 +19,7 @@ Question Statement - Statement you need to make SQL query for
 </Method>
 <Constraints>
 - Do not create queries that can change the database in any form
+- Maximum query size = 300 characters
 - Constraints; query must be non - null, shoudl not have any restrictied keywords
 - you can maximum have 10 calls over AI to generate query, the query should be simple to read
 - The SQL queries you generate can at max have 5 joins or 3 levels of nested subquery.

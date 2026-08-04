@@ -16,12 +16,14 @@ from langgraph.errors import GraphRecursionError
 
 from spider_agent_workbench.config import Settings
 from spider_agent_workbench import tools
-from spider_agent_workbench.paths import PROMPTS_DIR
+from spider_agent_workbench.guardrails.input_guardrails import run_input_guardrails
+from spider_agent_workbench.guardrails.output_guardrails import run_output_guardrails
+from spider_agent_workbench.paths import PROMPTS_DIR, DATABASES_DIR
+from spider_agent_workbench.constants import DEFAULT_MODEL, DEFAULT_MAX_TURNS
 
 
 DEFAULT_PROMPT_VERSION = "prompt_v2"
-DEFAULT_MODEL = "claude-sonnet-4-6"
-DEFAULT_MAX_TURNS = 10
+
 
 TOOLS = [
     tools.list_tables,
@@ -58,6 +60,7 @@ class AgentAnswer:
     sql: str | None
     turns: int
     hit_turn_limit: bool = False
+    notes: str | None = None
     # messages: list[BaseMessage] = field(default_factory=list)
 
 
@@ -71,7 +74,7 @@ def _extract_final_sql(messages: list[BaseMessage]) -> str | None:
     return None
 
 
-def answer_question(db_id:str, question: str, agent=None, max_turns:int = DEFAULT_MAX_TURNS) -> AgentAnswer:
+def answer_question(db_id:str, question: str, agent=None, max_turns:int = DEFAULT_MAX_TURNS, db_dir:str = DATABASES_DIR) -> AgentAnswer:
     """
     This is the entry point function to call the agent
     Run the agent on a single spider question and return its submitted SQL
@@ -80,16 +83,27 @@ def answer_question(db_id:str, question: str, agent=None, max_turns:int = DEFAUL
     if agent is None:
         agent = build_agent()
 
-    user_prompt = f"db_id:{db_id}\n Question: {question}"
+    input_guard = run_input_guardrails(db_id, db_dir, question)
+    if not input_guard.ok:
+        return AgentAnswer(db_id=db_id, question=question, sql=None, turns=0, hit_turn_limit=False, notes=input_guard.reason)
+
+    user_prompt = f"db_id:{db_id} :: db_dir:{db_dir}\n Question: {question}"
 
     try:
         result = agent.invoke(
             {"messages":[("user", user_prompt)]},
             config={"recursion_limit":max_turns}
         )
-    except GraphRecursionError:
-        return AgentAnswer(db_id = db_id, question = question, sql=None, turns=max_turns, hit_turn_limit=True)
+    except GraphRecursionError as e:
+        return AgentAnswer(db_id = db_id, question = question, sql=None, turns=max_turns, hit_turn_limit=True, notes=f"Error: AgentError: {e}")
 
+    notes = None
     messages = result['messages']
     turns = sum(1 for msg in messages if isinstance(msg, AIMessage))
-    return AgentAnswer(db_id=db_id, question=question, sql=_extract_final_sql(messages), turns=turns)
+    extracted_sql = _extract_final_sql(messages)
+    output_guardrail_result = run_output_guardrails(db_id, db_dir, extracted_sql)
+
+    if not output_guardrail_result.ok:
+        notes = output_guardrail_result.reason
+
+    return AgentAnswer(db_id=db_id, question=question, sql=extracted_sql, turns=turns, notes=notes)

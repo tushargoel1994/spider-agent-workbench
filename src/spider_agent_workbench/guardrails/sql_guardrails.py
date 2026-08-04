@@ -6,7 +6,7 @@ execute cannot.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass
+
 from pathlib import Path
 
 import sqlglot
@@ -15,6 +15,8 @@ from sqlglot.tokens import TokenType
 
 from spider_agent_workbench.paths import DATABASES_DIR
 from spider_agent_workbench.schema import get_table_list
+from spider_agent_workbench.guardrails.guardrail_result import GuardrailResult
+from spider_agent_workbench.constants import MAX_QUERY_CHARS, MAX_TABLE_JOINS, MAX_SUBQUERY_DEPTH
 
 FORBIDDEN_KEYWORDS = (
     "INSERT",
@@ -31,16 +33,6 @@ FORBIDDEN_KEYWORDS = (
     "VACUUM",
     "REINDEX",
 )
-
-MAX_QUERY_CHARS = 2000
-MAX_TABLE_JOINS = 5
-MAX_SUBQUERY_DEPTH = 3
-
-
-@dataclass(frozen=True)
-class GuardrailResult:
-    ok: bool
-    reason: str | None = None
 
 
 def check_read_only(sql: str) -> GuardrailResult:
@@ -105,6 +97,7 @@ def check_schema_tables(db_id: str, sql: str, db_dir: Path = DATABASES_DIR) -> G
             ),
         )
     return GuardrailResult(ok=True)
+
 
 def check_num_joins(sql: str, max_join: int = MAX_TABLE_JOINS) -> GuardrailResult:
     """Ensure there are no more than max_join JOINs in the query, counted via sqlglot's parsed AST."""
