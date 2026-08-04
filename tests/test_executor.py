@@ -41,3 +41,8 @@ def test_execute_query_no_result_set_statement(db_dir, db_id):
 def test_execute_query_raises_on_missing_db_file(db_dir):
     with pytest.raises(sqlite3.Error):
         execute_query("missing_db", "SELECT 1", db_dir)
+
+
+def test_execute_query_rejects_stacked_multi_statement_sql(db_dir, db_id):
+    with pytest.raises(sqlite3.Error):
+        execute_query(db_id, "SELECT * FROM students; DROP TABLE students", db_dir)

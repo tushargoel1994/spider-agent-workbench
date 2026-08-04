@@ -74,3 +74,15 @@ def test_get_table_list_excludes_sqlite_internal_tables(db_dir, db_id):
 
 def test_get_table_list_unknown_db_returns_empty_list(db_dir):
     assert schema.get_table_list("missing_db", db_dir) == []
+
+
+def test_get_column_list_returns_all_columns(db_dir, db_id):
+    assert schema.get_column_list(db_id, "students", db_dir) == ["id", "name", "course_id"]
+
+
+def test_get_column_list_unknown_table_returns_empty_list(db_dir, db_id):
+    assert schema.get_column_list(db_id, "ghost", db_dir) == []
+
+
+def test_get_column_list_unknown_db_returns_empty_list(db_dir):
+    assert schema.get_column_list("missing_db", "students", db_dir) == []

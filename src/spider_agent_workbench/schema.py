@@ -33,6 +33,19 @@ def get_table_info(db_id:str, table_name:str, db_dir: Path=DATABASES_DIR) -> str
 
 
 
+def get_column_list(db_id: str, table_name: str, db_dir: Path = DATABASES_DIR) -> list[str]:
+    """Get list of column names for a table."""
+    sqlite_path = get_sqlite_path(db_id, db_dir)
+    if sqlite_path is None:
+        return []
+    try:
+        with closing(sqlite3.connect(sqlite_path)) as conn:
+            cursor = conn.execute(f"PRAGMA table_info('{table_name}')").fetchall()
+            return [row[1] for row in cursor]
+    except sqlite3.Error as e:
+        return []
+
+
 def get_table_list(db_id: str, db_dir: Path=DATABASES_DIR) -> list[str]:
     """Get list of all table names"""
     table_list_query = "select name from sqlite_master where type='table' and name not like 'sqlite_%' order by name"

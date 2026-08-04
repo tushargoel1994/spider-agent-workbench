@@ -6,7 +6,7 @@ execute cannot.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass
+
 from pathlib import Path
 
 import sqlglot
@@ -14,7 +14,9 @@ from sqlglot import exp
 from sqlglot.tokens import TokenType
 
 from spider_agent_workbench.paths import DATABASES_DIR
-from spider_agent_workbench.schema import get_table_list
+from spider_agent_workbench.schema import get_column_list, get_table_list
+from spider_agent_workbench.guardrails.guardrail_result import GuardrailResult
+from spider_agent_workbench.constants import MAX_QUERY_CHARS, MAX_TABLE_JOINS, MAX_SUBQUERY_DEPTH
 
 FORBIDDEN_KEYWORDS = (
     "INSERT",
@@ -31,16 +33,6 @@ FORBIDDEN_KEYWORDS = (
     "VACUUM",
     "REINDEX",
 )
-
-MAX_QUERY_CHARS = 2000
-MAX_TABLE_JOINS = 5
-MAX_SUBQUERY_DEPTH = 3
-
-
-@dataclass(frozen=True)
-class GuardrailResult:
-    ok: bool
-    reason: str | None = None
 
 
 def check_read_only(sql: str) -> GuardrailResult:
@@ -105,6 +97,66 @@ def check_schema_tables(db_id: str, sql: str, db_dir: Path = DATABASES_DIR) -> G
             ),
         )
     return GuardrailResult(ok=True)
+
+
+def check_schema_columns(db_id: str, sql: str, db_dir: Path = DATABASES_DIR) -> GuardrailResult:
+    """Reject queries that reference columns not present on their table in this db_id's schema.
+
+    A qualified column (alias.column) is checked against that alias's table only; an
+    unqualified column is checked against the union of all referenced tables' columns,
+    since resolving it to one specific table would require full join-aware name
+    resolution that isn't worth it for a guardrail.
+    """
+    try:
+        parsed = sqlglot.parse_one(sql, read="sqlite")
+    except sqlglot.errors.ParseError:
+        # Malformed SQL isn't this check's job to reject — let it fall through
+        # to execution, where sqlite reports the real syntax error.
+        return GuardrailResult(ok=True)
+
+    tables = list(parsed.find_all(exp.Table))
+    if not tables:
+        return GuardrailResult(ok=True)
+
+    table_columns: dict[str, list[str]] = {}
+    alias_to_table: dict[str, str] = {}
+    for table in tables:
+        table_name = table.name
+        if table_name not in table_columns:
+            table_columns[table_name] = get_column_list(db_id, table_name, db_dir)
+        alias_to_table[(table.alias or table_name).lower()] = table_name
+
+    all_columns_lower = {
+        column.lower() for columns in table_columns.values() for column in columns
+    }
+
+    unknown = set()
+    for column in parsed.find_all(exp.Column):
+        column_name = column.name
+        if not column_name:
+            continue
+        qualifier = column.table
+        if qualifier:
+            resolved_table = alias_to_table.get(qualifier.lower())
+            if resolved_table is None:
+                # Unknown table/alias reference — check_schema_tables' job to reject.
+                continue
+            valid_columns = {c.lower() for c in table_columns.get(resolved_table, [])}
+            if column_name.lower() not in valid_columns:
+                unknown.add(column_name)
+        elif column_name.lower() not in all_columns_lower:
+            unknown.add(column_name)
+
+    if unknown:
+        return GuardrailResult(
+            ok=False,
+            reason=(
+                f"Rejected: unknown column(s) {sorted(unknown)}. "
+                f"Available columns: {table_columns}"
+            ),
+        )
+    return GuardrailResult(ok=True)
+
 
 def check_num_joins(sql: str, max_join: int = MAX_TABLE_JOINS) -> GuardrailResult:
     """Ensure there are no more than max_join JOINs in the query, counted via sqlglot's parsed AST."""
@@ -193,4 +245,8 @@ def validate_sql(db_id: str, sql: str, db_dir: Path = DATABASES_DIR) -> Guardrai
         if not result.ok:
             return result
 
-    return check_schema_tables(db_id, sql, db_dir)
+    result = check_schema_tables(db_id, sql, db_dir)
+    if not result.ok:
+        return result
+
+    return check_schema_columns(db_id, sql, db_dir)

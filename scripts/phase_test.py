@@ -32,7 +32,7 @@ NUM_DBS = 2
 QUESTIONS_PER_DB = 5
 NUM_WORKERS = 1
 
-RESULTS_PATH = paths.PROJECT_ROOT / "results" / "phase_2_result.json"
+RESULTS_PATH = paths.PROJECT_ROOT / "results" / "phase_3_result.json"
 
 
 def select_sample(seed: int = SAMPLE_SEED) -> dict[str, list[loaders.SpiderExample]]:
@@ -83,7 +83,7 @@ def run_worker(worker_id: int, db_examples: dict[str, list[loaders.SpiderExample
                 "[worker %d] [db %d/%d] db=%s\nQuestion=%s\nAI_answer=%s\nCorrect_Answer=%s",
                 worker_id, db_idx, total_dbs, db_id, example.question, answer.sql, example.gold_sql,
             )
-            result = score_query(db_id, answer.sql, example.gold_sql)
+            result = score_query(db_id, answer.sql, example.gold_sql, agent_notes=answer.notes)
             done += 1
             logger.info(
                 "[worker %d] [db %d/%d] [%d/%d] db=%s status=%s score=%s",
@@ -101,6 +101,7 @@ def run_worker(worker_id: int, db_examples: dict[str, list[loaders.SpiderExample
                     "detail": result.detail,
                     "turns": answer.turns,
                     "hit_turn_limit": answer.hit_turn_limit,
+                    "notes": answer.notes,
                 }
             )
 
@@ -129,7 +130,7 @@ def build_summary(records: list[dict]) -> dict:
 
 
 def main() -> None:
-    logging_config.setup_logging(phase_number=2)
+    logging_config.setup_logging(phase_number=3)
 
     sample = select_sample()
     worker_chunks = chunk_for_workers(sample, NUM_WORKERS)

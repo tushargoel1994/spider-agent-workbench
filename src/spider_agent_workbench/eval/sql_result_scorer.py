@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from spider_agent_workbench.executor import execute_query
-from spider_agent_workbench.guardrails import validate_sql
+from spider_agent_workbench.guardrails.sql_guardrails import validate_sql
 from spider_agent_workbench.paths import DATABASES_DIR
 
 # Large enough that Spider's dev/train databases never get row-truncated —
@@ -57,6 +57,7 @@ def score_query(
     predicted_sql: str | None,
     gold_sql: str,
     db_dir: Path = DATABASES_DIR,
+    agent_notes: str | None = None,
 ) -> ScoreResult:
     """Score a predicted SQL query against the gold SQL for the same question.
 
@@ -65,7 +66,27 @@ def score_query(
     rejected once (the tool returns an error string back to the agent, but
     the call itself still happened and is what gets extracted as the
     "final" answer) — this must not execute unfiltered agent output.
+
+    `agent_notes` is AgentAnswer.notes from agent.answer_question — set when
+    an input/output guardrail rejected something during the agent run itself.
+    When present, it's merged into the returned detail alongside whatever
+    this function determines independently, so a guardrail failure recorded
+    during the run isn't lost even if it doesn't affect score/status here.
     """
+    result = _score(db_id, predicted_sql, gold_sql, db_dir)
+    if not agent_notes:
+        return result
+
+    merged_detail = f"{result.detail} | agent_notes: {agent_notes}" if result.detail else f"agent_notes: {agent_notes}"
+    return ScoreResult(result.score, result.status, merged_detail)
+
+
+def _score(
+    db_id: str,
+    predicted_sql: str | None,
+    gold_sql: str,
+    db_dir: Path,
+) -> ScoreResult:
     if not predicted_sql:
         return ScoreResult(0, "no_sql", "Agent did not submit a query.")
 
