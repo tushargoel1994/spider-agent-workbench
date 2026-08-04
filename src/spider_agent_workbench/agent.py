@@ -22,7 +22,7 @@ from spider_agent_workbench.paths import PROMPTS_DIR, DATABASES_DIR
 from spider_agent_workbench.constants import DEFAULT_MODEL, DEFAULT_MAX_TURNS
 
 
-DEFAULT_PROMPT_VERSION = "prompt_v2"
+DEFAULT_PROMPT_VERSION = "prompt_v3"
 
 
 TOOLS = [
@@ -74,36 +74,57 @@ def _extract_final_sql(messages: list[BaseMessage]) -> str | None:
     return None
 
 
-def answer_question(db_id:str, question: str, agent=None, max_turns:int = DEFAULT_MAX_TURNS, db_dir:str = DATABASES_DIR) -> AgentAnswer:
-    """
-    This is the entry point function to call the agent
-    Run the agent on a single spider question and return its submitted SQL
-    """
+def answer_question(
+    db_id: str,
+    question: str,
+    agent=None,
+    max_turns: int = DEFAULT_MAX_TURNS,
+    db_dir: Path = DATABASES_DIR,
+) -> AgentAnswer:
+    """Run the agent on a single Spider question and return its submitted SQL.
 
+    Entry point for calling the agent end-to-end: input guardrails, the
+    agent's tool loop, then output guardrails on whatever SQL it submitted.
+    """
     if agent is None:
         agent = build_agent()
 
-    input_guard = run_input_guardrails(db_id, db_dir, question)
-    if not input_guard.ok:
-        return AgentAnswer(db_id=db_id, question=question, sql=None, turns=0, hit_turn_limit=False, notes=input_guard.reason)
+    input_guardrail_result = run_input_guardrails(db_id, db_dir, question)
+    if not input_guardrail_result.ok:
+        return AgentAnswer(
+            db_id=db_id, question=question, sql=None, turns=0, notes=input_guardrail_result.reason
+        )
 
     user_prompt = f"db_id:{db_id} :: db_dir:{db_dir}\n Question: {question}"
 
+    # langgraph's recursion_limit counts graph steps, not LLM turns: the
+    # prebuilt ReAct graph has separate "model" and "tools" nodes, so each
+    # full agent turn (LLM call + tool call) costs 2 steps. max_turns is
+    # meant to budget real LLM turns (it's also the number the prompt tells
+    # the model it has), so double it, plus one step of headroom for the
+    # final turn's tool call.
+    recursion_limit = max_turns * 2 + 1
+
     try:
         result = agent.invoke(
-            {"messages":[("user", user_prompt)]},
-            config={"recursion_limit":max_turns}
+            {"messages": [("user", user_prompt)]},
+            config={"recursion_limit": recursion_limit},
         )
     except GraphRecursionError as e:
-        return AgentAnswer(db_id = db_id, question = question, sql=None, turns=max_turns, hit_turn_limit=True, notes=f"Error: AgentError: {e}")
+        return AgentAnswer(
+            db_id=db_id,
+            question=question,
+            sql=None,
+            turns=max_turns,
+            hit_turn_limit=True,
+            notes=f"Error: AgentError: {e}",
+        )
 
-    notes = None
-    messages = result['messages']
+    messages = result["messages"]
     turns = sum(1 for msg in messages if isinstance(msg, AIMessage))
     extracted_sql = _extract_final_sql(messages)
-    output_guardrail_result = run_output_guardrails(db_id, db_dir, extracted_sql)
 
-    if not output_guardrail_result.ok:
-        notes = output_guardrail_result.reason
+    output_guardrail_result = run_output_guardrails(db_id, db_dir, extracted_sql)
+    notes = output_guardrail_result.reason if not output_guardrail_result.ok else None
 
     return AgentAnswer(db_id=db_id, question=question, sql=extracted_sql, turns=turns, notes=notes)

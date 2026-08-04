@@ -8,6 +8,7 @@ from spider_agent_workbench.guardrails.sql_guardrails import (
     check_num_joins,
     check_query_length,
     check_read_only,
+    check_schema_columns,
     check_schema_tables,
     check_subquery_depth,
     validate_sql,
@@ -135,6 +136,47 @@ def test_check_schema_tables_handles_quoted_identifiers(db_dir, db_id):
     assert check_schema_tables(db_id, 'SELECT * FROM "students"', db_dir).ok
 
 
+def test_check_schema_columns_allows_known_unqualified_columns(db_dir, db_id):
+    assert check_schema_columns(db_id, "SELECT id, name FROM students", db_dir).ok
+
+
+def test_check_schema_columns_rejects_unknown_unqualified_column(db_dir, db_id):
+    result = check_schema_columns(db_id, "SELECT ghost_col FROM students", db_dir)
+    assert not result.ok
+    assert "ghost_col" in result.reason
+
+
+def test_check_schema_columns_allows_known_qualified_column(db_dir, db_id):
+    assert check_schema_columns(db_id, "SELECT s.name FROM students s", db_dir).ok
+
+
+def test_check_schema_columns_rejects_column_not_on_qualified_table(db_dir, db_id):
+    # 'title' exists on courses, not on students, so students.title (aliased s.title) is invalid.
+    result = check_schema_columns(db_id, "SELECT s.title FROM students s", db_dir)
+    assert not result.ok
+    assert "title" in result.reason
+
+
+def test_check_schema_columns_allows_join_columns_from_both_tables(db_dir, db_id):
+    sql = (
+        "SELECT s.name, c.title FROM students s "
+        "JOIN courses c ON s.course_id = c.id"
+    )
+    assert check_schema_columns(db_id, sql, db_dir).ok
+
+
+def test_check_schema_columns_allows_star(db_dir, db_id):
+    assert check_schema_columns(db_id, "SELECT * FROM students", db_dir).ok
+
+
+def test_check_schema_columns_handles_quoted_identifiers(db_dir, db_id):
+    assert check_schema_columns(db_id, 'SELECT "id" FROM students', db_dir).ok
+
+
+def test_check_schema_columns_handles_malformed_sql_gracefully(db_dir, db_id):
+    assert check_schema_columns(db_id, "SELECT FROM WHERE (((", db_dir).ok
+
+
 def test_validate_sql_allows_clean_select(db_dir, db_id):
     assert validate_sql(db_id, "SELECT * FROM students", db_dir).ok
 
@@ -143,6 +185,12 @@ def test_validate_sql_short_circuits_on_first_failure(db_dir, db_id):
     result = validate_sql(db_id, "DELETE FROM ghost_table", db_dir)
     assert not result.ok
     assert "DELETE" in result.reason
+
+
+def test_validate_sql_rejects_unknown_column(db_dir, db_id):
+    result = validate_sql(db_id, "SELECT ghost_col FROM students", db_dir)
+    assert not result.ok
+    assert "ghost_col" in result.reason
 
 
 def test_check_subquery_depth_allows_flat_select():

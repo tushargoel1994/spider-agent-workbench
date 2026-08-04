@@ -240,7 +240,22 @@ def test_answer_question_prompt_includes_db_id_and_question(db_dir, db_id):
     user_prompt = prompt_payload["messages"][0][1]
     assert db_id in user_prompt
     assert "How many students are there?" in user_prompt
-    assert call_kwargs["config"]["recursion_limit"] == DEFAULT_MAX_TURNS
+    # langgraph's recursion_limit counts graph steps, not LLM turns — the
+    # prebuilt ReAct graph has separate "model" and "tools" nodes, so each
+    # full agent turn (LLM call + tool call) costs 2 steps. Passing
+    # max_turns straight through as recursion_limit only budgets half as
+    # many real turns as the prompt tells the model it has.
+    assert call_kwargs["config"]["recursion_limit"] == DEFAULT_MAX_TURNS * 2 + 1
+
+
+def test_answer_question_scales_recursion_limit_with_max_turns(db_dir, db_id):
+    mock_agent = MagicMock()
+    mock_agent.invoke.return_value = {"messages": []}
+
+    answer_question(db_id, "How many students are there?", agent=mock_agent, max_turns=3, db_dir=db_dir)
+
+    _, call_kwargs = mock_agent.invoke.call_args
+    assert call_kwargs["config"]["recursion_limit"] == 3 * 2 + 1
 
 
 # build_agent

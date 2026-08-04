@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "sample_seed": 42,
+    "num_db": 2,
+    "questions_per_db": 5,
+    "split": "validation",
+    "prompt_version": "prompt_v3",
+    "generated_at": "2026-08-04T05:49:32.908054+00:00"
+  },
+  "summary": {
+    "total_questions": 10,
+    "total_score": 7,
+    "accuracy": 0.7,
+    "by_status": {
+      "match": 7,
+      "row_count_mismatch": 1,
+      "column_count_mismatch": 1,
+      "value_mismatch": 1
+    },
+    "by_db": {
+      "course_teach": {
+        "score": 4,
+        "total": 5
+      },
+      "battle_death": {
+        "score": 3,
+        "total": 5
+      }
+    }
+  },
+  "results": [
+    {
+      "db_id": "course_teach",
+      "question": "What are the names of the people who teach math courses?",
+      "predicted_sql": "\nSELECT DISTINCT t.Name\nFROM teacher t\nJOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID\nJOIN course c ON ca.Course_ID = c.Course_ID\nWHERE c.Course LIKE '%math%'\n",
+      "gold_sql": "SELECT T3.Name FROM course_arrange AS T1 JOIN course AS T2 ON T1.Course_ID  =  T2.Course_ID JOIN teacher AS T3 ON T1.Teacher_ID  =  T3.Teacher_ID WHERE T2.Course  =  \"Math\"",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null
+    },
+    {
+      "db_id": "course_teach",
+      "question": "Show the name of teachers aged either 32 or 33?",
+      "predicted_sql": "SELECT Name FROM teacher WHERE Age IN ('32', '33')",
+      "gold_sql": "SELECT Name FROM teacher WHERE Age  =  32 OR Age  =  33",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null
+    },
+    {
+      "db_id": "course_teach",
+      "question": "What are the names of the teachers whose hometown is not `` Little Lever Urban District '' ?",
+      "predicted_sql": "SELECT Name FROM teacher WHERE Hometown != 'Little Lever Urban District'",
+      "gold_sql": "select name from teacher where hometown != \"little lever urban district\"",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=7 rows, predicted=6 rows",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null
+    },
+    {
+      "db_id": "course_teach",
+      "question": "What are the age and hometown of teachers?",
+      "predicted_sql": "SELECT Age, Hometown FROM teacher",
+      "gold_sql": "SELECT Age ,  Hometown FROM teacher",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null
+    },
+    {
+      "db_id": "course_teach",
+      "question": "What are the names of the teachers ordered by ascending age?",
+      "predicted_sql": "SELECT Name FROM teacher ORDER BY Age ASC",
+      "gold_sql": "SELECT Name FROM teacher ORDER BY Age ASC",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null
+    },
+    {
+      "db_id": "battle_death",
+      "question": "List the name, date and result of each battle.",
+      "predicted_sql": "SELECT name, date, result FROM battle",
+      "gold_sql": "SELECT name ,  date FROM battle",
+      "score": 0,
+      "status": "column_count_mismatch",
+      "detail": "gold has 2 columns, predicted has 3",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null
+    },
+    {
+      "db_id": "battle_death",
+      "question": "What is the ship id and name that caused most total injuries?",
+      "predicted_sql": "\nSELECT s.id, s.name\nFROM death d\nJOIN ship s ON d.caused_by_ship_id = s.id\nGROUP BY s.id, s.name\nORDER BY SUM(d.injured) DESC\nLIMIT 1\n",
+      "gold_sql": "SELECT T2.id ,  T2.name FROM death AS T1 JOIN ship AS t2 ON T1.caused_by_ship_id  =  T2.id GROUP BY T2.id ORDER BY count(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null
+    },
+    {
+      "db_id": "battle_death",
+      "question": "What are the name and results of the battles when the bulgarian commander is not 'Boril'",
+      "predicted_sql": "SELECT name, result FROM battle WHERE bulgarian_commander != 'Boril'",
+      "gold_sql": "SELECT name ,  RESULT FROM battle WHERE bulgarian_commander != 'Boril'",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null
+    },
+    {
+      "db_id": "battle_death",
+      "question": "How many ships ended up being 'Captured'?",
+      "predicted_sql": "SELECT COUNT(*) FROM ship WHERE disposition_of_ship = 'Captured'",
+      "gold_sql": "SELECT count(*) FROM ship WHERE disposition_of_ship  =  'Captured'",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null
+    },
+    {
+      "db_id": "battle_death",
+      "question": "How many battles did not lose any ship with tonnage '225'?",
+      "predicted_sql": "SELECT COUNT(*) FROM battle WHERE id NOT IN (SELECT lost_in_battle FROM ship WHERE tonnage = '225' AND lost_in_battle IS NOT NULL)",
+      "gold_sql": "SELECT count(*) FROM battle WHERE id NOT IN ( SELECT lost_in_battle FROM ship WHERE tonnage  =  '225' );",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null
+    }
+  ]
+}
