@@ -21,7 +21,7 @@ from spider_agent_workbench.paths import PROMPTS_DIR
 
 DEFAULT_PROMPT_VERSION = "prompt_v2"
 DEFAULT_MODEL = "claude-sonnet-4-6"
-DEFAULT_MAX_TURNS = 10
+DEFAULT_MAX_TURNS = 7
 
 TOOLS = [
     tools.list_tables,
@@ -82,10 +82,11 @@ def answer_question(db_id:str, question: str, agent=None, max_turns:int = DEFAUL
 
     user_prompt = f"db_id:{db_id}\n Question: {question}"
 
+    recursion_limit = max_turns * 2 + 1
     try:
         result = agent.invoke(
             {"messages":[("user", user_prompt)]},
-            config={"recursion_limit":max_turns}
+            config={"recursion_limit":recursion_limit}
         )
     except GraphRecursionError:
         return AgentAnswer(db_id = db_id, question = question, sql=None, turns=max_turns, hit_turn_limit=True)
