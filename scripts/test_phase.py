@@ -1,18 +1,21 @@
 """
-Phase 1 accuracy check.
+Phase accuracy check.
 
-Draws a fixed random sample of 20 db_ids x 5 questions each (100 total) from
-the validation split, runs the Phase 1 agent on every question, scores each
-answer against gold SQL via sql_result_scorer, and writes
-results/phase_1_result.json with a summary plus one record per question.
+Usage: uv run scripts/test_phase.py --phase <phase_number>
 
-Split across 2 worker threads (10 db_ids x 5 questions = 50 each), each with
-its own independent agent instance so there's no shared mutable state to
-worry about between threads.
+Draws a fixed random sample of NUM_DBS db_ids x QUESTIONS_PER_DB questions
+each from the validation split, runs the agent (using prompts/prompt_v<phase>.md)
+on every question, scores each answer against gold SQL via sql_result_scorer,
+and writes results/phase_<phase>_result.json with a summary plus one record
+per question. Logs go to logs/phase_<phase>_<timestamp>.log.
+
+Split across NUM_WORKERS worker threads, each with its own independent agent
+instance so there's no shared mutable state to worry about between threads.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import logging
 import random
@@ -28,30 +31,36 @@ from spider_agent_workbench.eval.sql_result_scorer import score_query
 logger = logging.getLogger(__name__)
 
 SAMPLE_SEED = 42
-NUM_DBS = 2
+NUM_DBS = 10
 QUESTIONS_PER_DB = 5
-NUM_WORKERS = 1
+NUM_WORKERS = 2
 
-RESULTS_PATH = paths.PROJECT_ROOT / "results" / "phase_1_result.json"
+# Only prompt_v1.md exists today, so phase 1 is the only value that currently
+# resolves to a real prompt file. Later phases (prompt_v2.md, ...) plug in
+# once those prompt versions are added, with no further script changes.
+PROMPT_VERSION_TEMPLATE = "prompt_v{phase}"
+RESULTS_PATH_TEMPLATE = "phase_{phase}_result.json"
 
 
 def select_sample(seed: int = SAMPLE_SEED) -> dict[str, list[loaders.SpiderExample]]:
-    """Pick NUM_DBS db_ids (each with >= QUESTIONS_PER_DB validation
-    questions available) and QUESTIONS_PER_DB questions per db_id,
-    deterministically from `seed` so reruns are comparable across prompt
-    versions."""
+    """Pick NUM_DBS db_ids and up to QUESTIONS_PER_DB questions per db_id
+    (all questions if a db_id has fewer), deterministically from `seed` so
+    reruns are comparable across prompt versions."""
     examples = loaders.filter_available(list(loaders.iter_examples("validation")))
     grouped = loaders.group_by_db(examples)
 
-    eligible = sorted(db_id for db_id, ex in grouped.items() if len(ex) >= QUESTIONS_PER_DB)
-    if len(eligible) < NUM_DBS:
+    available = sorted(grouped.keys())
+    if NUM_DBS > len(available):
         raise ValueError(
-            f"Only {len(eligible)} validation db_ids have >= {QUESTIONS_PER_DB} questions; need {NUM_DBS}."
+            f"Validation split only has {len(available)} db_ids; requested NUM_DBS={NUM_DBS}."
         )
 
     rng = random.Random(seed)
-    chosen_dbs = rng.sample(eligible, NUM_DBS)
-    return {db_id: rng.sample(grouped[db_id], QUESTIONS_PER_DB) for db_id in chosen_dbs}
+    chosen_dbs = rng.sample(available, NUM_DBS)
+    return {
+        db_id: rng.sample(grouped[db_id], min(QUESTIONS_PER_DB, len(grouped[db_id])))
+        for db_id in chosen_dbs
+    }
 
 
 def chunk_for_workers(
@@ -69,8 +78,10 @@ def chunk_for_workers(
     return chunks
 
 
-def run_worker(worker_id: int, db_examples: dict[str, list[loaders.SpiderExample]]) -> list[dict]:
-    agent = agent_workbench.build_agent()
+def run_worker(
+    worker_id: int, db_examples: dict[str, list[loaders.SpiderExample]], prompt_version: str
+) -> list[dict]:
+    agent = agent_workbench.build_agent(prompt_version=prompt_version)
     total = sum(len(examples) for examples in db_examples.values())
     total_dbs = len(db_examples)
     done = 0
@@ -128,15 +139,35 @@ def build_summary(records: list[dict]) -> dict:
     }
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--phase",
+        type=int,
+        required=True,
+        help="Phase number, e.g. 1 -> prompts/prompt_v1.md, logs/phase_1_<ts>.log, "
+        "results/phase_1_result.json. Only 1 is testable today (only prompt_v1.md exists).",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
-    logging_config.setup_logging(phase_number=1)
+    args = parse_args()
+    phase = args.phase
+    prompt_version = PROMPT_VERSION_TEMPLATE.format(phase=phase)
+    results_path = paths.PROJECT_ROOT / "results" / RESULTS_PATH_TEMPLATE.format(phase=phase)
+
+    logging_config.setup_logging(phase_number=phase)
 
     sample = select_sample()
     worker_chunks = chunk_for_workers(sample, NUM_WORKERS)
 
     all_records: list[dict] = []
     with ThreadPoolExecutor(max_workers=NUM_WORKERS) as executor:
-        futures = [executor.submit(run_worker, i, chunk) for i, chunk in enumerate(worker_chunks)]
+        futures = [
+            executor.submit(run_worker, i, chunk, prompt_version)
+            for i, chunk in enumerate(worker_chunks)
+        ]
         for future in futures:
             all_records.extend(future.result())
 
@@ -147,18 +178,18 @@ def main() -> None:
             "num_db": NUM_DBS,
             "questions_per_db": QUESTIONS_PER_DB,
             "split": "validation",
-            "prompt_version": agent_workbench.DEFAULT_PROMPT_VERSION,
+            "prompt_version": prompt_version,
             "generated_at": datetime.now(timezone.utc).isoformat(),
         },
         "summary": summary,
         "results": all_records,
     }
 
-    RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    RESULTS_PATH.write_text(json.dumps(output, indent=2), encoding="utf-8")
+    results_path.parent.mkdir(parents=True, exist_ok=True)
+    results_path.write_text(json.dumps(output, indent=2), encoding="utf-8")
     logger.info(
         "Wrote %s — accuracy: %.0f%% (%d/%d)",
-        RESULTS_PATH, summary["accuracy"] * 100, summary["total_score"], summary["total_questions"],
+        results_path, summary["accuracy"] * 100, summary["total_score"], summary["total_questions"],
     )
 
 
