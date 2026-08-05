@@ -1,20 +1,22 @@
 {
   "meta": {
     "sample_seed": 42,
-    "num_db": 2,
+    "num_db": 20,
     "questions_per_db": 5,
     "split": "validation",
     "prompt_version": "prompt_v1",
-    "generated_at": "2026-07-28T06:45:31.038230+00:00"
+    "generated_at": "2026-08-05T21:30:26.434272+00:00"
   },
   "summary": {
-    "total_questions": 10,
-    "total_score": 3,
-    "accuracy": 0.3,
+    "total_questions": 99,
+    "total_score": 38,
+    "accuracy": 0.3838383838383838,
     "by_status": {
-      "no_sql": 5,
-      "match": 3,
-      "column_count_mismatch": 2
+      "match": 38,
+      "no_sql": 51,
+      "column_count_mismatch": 2,
+      "row_count_mismatch": 3,
+      "value_mismatch": 5
     },
     "by_db": {
       "course_teach": {
@@ -24,15 +26,109 @@
       "battle_death": {
         "score": 1,
         "total": 5
+      },
+      "museum_visit": {
+        "score": 1,
+        "total": 5
+      },
+      "flight_2": {
+        "score": 3,
+        "total": 5
+      },
+      "tvshow": {
+        "score": 2,
+        "total": 5
+      },
+      "concert_singer": {
+        "score": 2,
+        "total": 5
+      },
+      "pets_1": {
+        "score": 2,
+        "total": 5
+      },
+      "car_1": {
+        "score": 1,
+        "total": 5
+      },
+      "orchestra": {
+        "score": 4,
+        "total": 5
+      },
+      "voter_1": {
+        "score": 4,
+        "total": 5
+      },
+      "poker_player": {
+        "score": 4,
+        "total": 5
+      },
+      "employee_hire_evaluation": {
+        "score": 0,
+        "total": 5
+      },
+      "world_1": {
+        "score": 1,
+        "total": 5
+      },
+      "student_transcripts_tracking": {
+        "score": 1,
+        "total": 5
+      },
+      "real_estate_properties": {
+        "score": 1,
+        "total": 4
+      },
+      "network_1": {
+        "score": 2,
+        "total": 5
+      },
+      "cre_Doc_Template_Mgt": {
+        "score": 2,
+        "total": 5
+      },
+      "singer": {
+        "score": 2,
+        "total": 5
+      },
+      "dog_kennels": {
+        "score": 1,
+        "total": 5
+      },
+      "wta_1": {
+        "score": 2,
+        "total": 5
       }
     }
   },
   "results": [
     {
       "db_id": "course_teach",
-      "question": "What are the names of the people who teach math courses?",
-      "predicted_sql": null,
+      "question": "Show the name of the teacher for the math course.",
+      "predicted_sql": "\nSELECT t.Name\nFROM teacher t\nJOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID\nJOIN course c ON ca.Course_ID = c.Course_ID\nWHERE c.Course = 'Math'\n",
       "gold_sql": "SELECT T3.Name FROM course_arrange AS T1 JOIN course AS T2 ON T1.Course_ID  =  T2.Course_ID JOIN teacher AS T3 ON T1.Teacher_ID  =  T3.Teacher_ID WHERE T2.Course  =  \"Math\"",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "course_teach",
+      "question": "Show names of teachers and the courses they are arranged to teach in ascending alphabetical order of the teacher's name.",
+      "predicted_sql": "\nSELECT t.Name, c.Course\nFROM teacher t\nJOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID\nJOIN course c ON ca.Course_ID = c.Course_ID\nORDER BY t.Name ASC;\n",
+      "gold_sql": "SELECT T3.Name ,  T2.Course FROM course_arrange AS T1 JOIN course AS T2 ON T1.Course_ID  =  T2.Course_ID JOIN teacher AS T3 ON T1.Teacher_ID  =  T3.Teacher_ID ORDER BY T3.Name",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "course_teach",
+      "question": "What are the towns from which at least two teachers come from?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT Hometown FROM teacher GROUP BY Hometown HAVING COUNT(*)  >=  2",
       "score": 0,
       "status": "no_sql",
       "detail": "Agent did not submit a query.",
@@ -41,9 +137,9 @@
     },
     {
       "db_id": "course_teach",
-      "question": "Show the name of teachers aged either 32 or 33?",
+      "question": "For each hometown, how many teachers are there?",
       "predicted_sql": null,
-      "gold_sql": "SELECT Name FROM teacher WHERE Age  =  32 OR Age  =  33",
+      "gold_sql": "SELECT Hometown ,  COUNT(*) FROM teacher GROUP BY Hometown",
       "score": 0,
       "status": "no_sql",
       "detail": "Agent did not submit a query.",
@@ -62,42 +158,20 @@
       "hit_turn_limit": true
     },
     {
-      "db_id": "course_teach",
-      "question": "What are the age and hometown of teachers?",
-      "predicted_sql": "SELECT Age, Hometown FROM teacher",
-      "gold_sql": "SELECT Age ,  Hometown FROM teacher",
-      "score": 1,
-      "status": "match",
-      "detail": null,
-      "turns": 5,
-      "hit_turn_limit": false
-    },
-    {
-      "db_id": "course_teach",
-      "question": "What are the names of the teachers ordered by ascending age?",
-      "predicted_sql": "SELECT Name FROM teacher ORDER BY CAST(Age AS INTEGER) ASC",
-      "gold_sql": "SELECT Name FROM teacher ORDER BY Age ASC",
-      "score": 1,
-      "status": "match",
-      "detail": null,
-      "turns": 5,
-      "hit_turn_limit": false
-    },
-    {
       "db_id": "battle_death",
-      "question": "List the name, date and result of each battle.",
-      "predicted_sql": "SELECT name, date, result FROM battle",
-      "gold_sql": "SELECT name ,  date FROM battle",
+      "question": "Show names, results and bulgarian commanders of the battles with no ships lost in the 'English Channel'.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT name ,  RESULT ,  bulgarian_commander FROM battle EXCEPT SELECT T1.name ,  T1.result ,  T1.bulgarian_commander FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.location  =  'English Channel'",
       "score": 0,
-      "status": "column_count_mismatch",
-      "detail": "gold has 2 columns, predicted has 3",
-      "turns": 5,
-      "hit_turn_limit": false
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
     },
     {
       "db_id": "battle_death",
       "question": "What is the ship id and name that caused most total injuries?",
-      "predicted_sql": "\nSELECT s.id, s.name, SUM(d.injured) AS total_injured\nFROM death d\nJOIN ship s ON d.caused_by_ship_id = s.id\nGROUP BY s.id, s.name\nORDER BY total_injured DESC\nLIMIT 1\n",
+      "predicted_sql": "\nSELECT s.id, s.name, SUM(d.injured) AS total_injuries\nFROM ship s\nJOIN death d ON s.id = d.caused_by_ship_id\nGROUP BY s.id, s.name\nORDER BY total_injuries DESC\nLIMIT 1\n",
       "gold_sql": "SELECT T2.id ,  T2.name FROM death AS T1 JOIN ship AS t2 ON T1.caused_by_ship_id  =  T2.id GROUP BY T2.id ORDER BY count(*) DESC LIMIT 1",
       "score": 0,
       "status": "column_count_mismatch",
@@ -107,9 +181,20 @@
     },
     {
       "db_id": "battle_death",
-      "question": "What are the name and results of the battles when the bulgarian commander is not 'Boril'",
+      "question": "What is the average number of injuries caused each time?",
       "predicted_sql": null,
-      "gold_sql": "SELECT name ,  RESULT FROM battle WHERE bulgarian_commander != 'Boril'",
+      "gold_sql": "SELECT avg(injured) FROM death",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "battle_death",
+      "question": "How many battles did not lose any ship with tonnage '225'?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT count(*) FROM battle WHERE id NOT IN ( SELECT lost_in_battle FROM ship WHERE tonnage  =  '225' );",
       "score": 0,
       "status": "no_sql",
       "detail": "Agent did not submit a query.",
@@ -128,15 +213,983 @@
       "hit_turn_limit": false
     },
     {
-      "db_id": "battle_death",
-      "question": "How many battles did not lose any ship with tonnage '225'?",
+      "db_id": "museum_visit",
+      "question": "Find the average number of staff working for the museums that were open before 2009.",
       "predicted_sql": null,
-      "gold_sql": "SELECT count(*) FROM battle WHERE id NOT IN ( SELECT lost_in_battle FROM ship WHERE tonnage  =  '225' );",
+      "gold_sql": "SELECT avg(num_of_staff) FROM museum WHERE open_year  <  2009",
       "score": 0,
       "status": "no_sql",
       "detail": "Agent did not submit a query.",
       "turns": 10,
       "hit_turn_limit": true
+    },
+    {
+      "db_id": "museum_visit",
+      "question": "What are the average and maximum number of tickets bought in all visits?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT avg(num_of_ticket) ,  max(num_of_ticket) FROM visit",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "museum_visit",
+      "question": "What are the id and name of the museum visited most times?",
+      "predicted_sql": "\nSELECT m.Museum_ID, m.Name\nFROM museum m\nJOIN visit v ON m.Museum_ID = v.Museum_ID\nGROUP BY m.Museum_ID, m.Name\nORDER BY COUNT(*) DESC\nLIMIT 1\n",
+      "gold_sql": "SELECT t2.Museum_ID ,  t1.name FROM museum AS t1 JOIN visit AS t2 ON t1.Museum_ID  =  t2.Museum_ID GROUP BY t2.Museum_ID ORDER BY count(*) DESC LIMIT 1",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "museum_visit",
+      "question": "Find the id and name of the museum that has the most staff members?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT museum_id ,  name FROM museum ORDER BY num_of_staff DESC LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "museum_visit",
+      "question": "What is the average age of the visitors whose membership level is not higher than 4?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT avg(age) FROM visitor WHERE Level_of_membership  <=  4",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "flight_2",
+      "question": "Count the number of flights into ATO.",
+      "predicted_sql": "SELECT COUNT(*) FROM flights WHERE DestAirport = 'ATO'",
+      "gold_sql": "SELECT count(*) FROM FLIGHTS WHERE DestAirport  =  \"ATO\"",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "flight_2",
+      "question": "Which city has the most frequent destination airport?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T1.City FROM AIRPORTS AS T1 JOIN FLIGHTS AS T2 ON T1.AirportCode  =  T2.DestAirport GROUP BY T1.City ORDER BY count(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "flight_2",
+      "question": "Return the number of flights.",
+      "predicted_sql": "SELECT COUNT(*) FROM flights",
+      "gold_sql": "SELECT count(*) FROM FLIGHTS",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "flight_2",
+      "question": "Return the number of  airports.",
+      "predicted_sql": "SELECT COUNT(*) FROM airports",
+      "gold_sql": "SELECT count(*) FROM AIRPORTS",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "flight_2",
+      "question": "What is the code of airport that has fewest number of flights?",
+      "predicted_sql": "\nSELECT AirportCode, COUNT(*) AS total_flights\nFROM (\n    SELECT SourceAirport AS AirportCode FROM flights\n    UNION ALL\n    SELECT DestAirport AS AirportCode FROM flights\n) AS all_flights\nGROUP BY AirportCode\nORDER BY total_flights ASC\nLIMIT 1\n",
+      "gold_sql": "SELECT T1.AirportCode FROM AIRPORTS AS T1 JOIN FLIGHTS AS T2 ON T1.AirportCode  =  T2.DestAirport OR T1.AirportCode  =  T2.SourceAirport GROUP BY T1.AirportCode ORDER BY count(*) LIMIT 1",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=0 rows, predicted=1 rows",
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "tvshow",
+      "question": "list all cartoon titles and their directors ordered by their air date",
+      "predicted_sql": null,
+      "gold_sql": "SELECT title ,  Directed_by FROM Cartoon ORDER BY Original_air_date",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "tvshow",
+      "question": "List each language and the number of TV Channels using it.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT LANGUAGE ,  count(*) FROM TV_Channel GROUP BY LANGUAGE",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "tvshow",
+      "question": "find the pixel aspect ratio and nation of the tv channels that do not use English.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT Pixel_aspect_ratio_PAR ,  country FROM tv_channel WHERE LANGUAGE != 'English'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "tvshow",
+      "question": "What is the TV Channel of TV series with Episode \"A Love of a Lifetime\"? List the TV Channel's series name.",
+      "predicted_sql": "\nSELECT TC.series_name\nFROM TV_Channel TC\nJOIN TV_series TS ON TC.id = TS.Channel\nWHERE TS.Episode = 'A Love of a Lifetime'\n",
+      "gold_sql": "SELECT T1.series_name FROM TV_Channel AS T1 JOIN TV_series AS T2 ON T1.id = T2.Channel WHERE T2.Episode = \"A Love of a Lifetime\";",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "tvshow",
+      "question": "What is the Package Option of TV Channel with serial name \"Sky Radio\"?",
+      "predicted_sql": "SELECT Package_Option FROM TV_Channel WHERE series_name = 'Sky Radio'",
+      "gold_sql": "SELECT Package_Option FROM TV_Channel WHERE series_name = \"Sky Radio\";",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "concert_singer",
+      "question": "Show name, country, age for all singers ordered by age from the oldest to the youngest.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT name ,  country ,  age FROM singer ORDER BY age DESC",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "concert_singer",
+      "question": "What are the names of the stadiums without any concerts?",
+      "predicted_sql": "SELECT s.Name \nFROM stadium s\nWHERE s.Stadium_ID NOT IN (SELECT Stadium_ID FROM concert)",
+      "gold_sql": "SELECT name FROM stadium WHERE stadium_id NOT IN (SELECT stadium_id FROM concert)",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "concert_singer",
+      "question": "What are the names , themes , and number of singers for every concert ?",
+      "predicted_sql": "\nSELECT \n    c.concert_Name, \n    c.Theme, \n    COUNT(s.Singer_ID) AS num_singers\nFROM concert c\nLEFT JOIN singer_in_concert s ON c.concert_ID = s.concert_ID\nGROUP BY c.concert_ID, c.concert_Name, c.Theme\n",
+      "gold_sql": "select t2.concert_name ,  t2.theme ,  count(*) from singer_in_concert as t1 join concert as t2 on t1.concert_id  =  t2.concert_id group by t2.concert_id",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "concert_singer",
+      "question": "What are the names and release years for all the songs of the youngest singer?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT song_name ,  song_release_year FROM singer ORDER BY age LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "concert_singer",
+      "question": "Show the stadium name and capacity with most number of concerts in year 2014 or after.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T2.name ,  T2.capacity FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.year  >=  2014 GROUP BY T2.stadium_id ORDER BY count(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "pets_1",
+      "question": "List the maximum weight and type for each type of pet.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT max(weight) ,  petType FROM pets GROUP BY petType",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "pets_1",
+      "question": "For students who have pets , how many pets does each student have ? list their ids instead of names .",
+      "predicted_sql": "\nSELECT StuID, COUNT(PetID) AS num_pets\nFROM Has_Pet\nGROUP BY StuID\n",
+      "gold_sql": "select count(*) ,  t1.stuid from student as t1 join has_pet as t2 on t1.stuid  =  t2.stuid group by t1.stuid",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "pets_1",
+      "question": "Find the id of students who do not have a cat pet.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT stuid FROM student EXCEPT SELECT T1.stuid FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid JOIN pets AS T3 ON T3.petid  =  T2.petid WHERE T3.pettype  =  'cat'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "pets_1",
+      "question": "Find the average age of students who do not have any pet .",
+      "predicted_sql": "SELECT AVG(Age) AS avg_age FROM Student WHERE StuID NOT IN (SELECT StuID FROM Has_Pet)",
+      "gold_sql": "select avg(age) from student where stuid not in (select stuid from has_pet)",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "pets_1",
+      "question": "What is the last name of the student who has a cat that is 3 years old?",
+      "predicted_sql": "\nSELECT S.LName\nFROM Student S\nJOIN Has_Pet HP ON S.StuID = HP.StuID\nJOIN Pets P ON HP.PetID = P.PetID\nWHERE P.PetType = 'cat' AND P.pet_age = 3\n",
+      "gold_sql": "SELECT T1.lname FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid JOIN pets AS T3 ON T3.petid  =  T2.petid WHERE T3.pet_age  =  3 AND T3.pettype  =  'cat'",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "car_1",
+      "question": "Which model saves the most gasoline? That is to say, have the maximum miles per gallon.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T1.Model FROM CAR_NAMES AS T1 JOIN CARS_DATA AS T2 ON T1.MakeId  =  T2.Id ORDER BY T2.mpg DESC LIMIT 1;",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "car_1",
+      "question": "What is the number of cars with a greater accelerate than the one with the most horsepower?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT COUNT(*) FROM CARS_DATA WHERE Accelerate  >  ( SELECT Accelerate FROM CARS_DATA ORDER BY Horsepower DESC LIMIT 1 );",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "car_1",
+      "question": "What is the accelerate of the car make amc hornet sportabout (sw)?",
+      "predicted_sql": "SELECT cd.Accelerate FROM cars_data cd JOIN car_names cn ON cd.Id = cn.MakeId WHERE cn.Make = 'amc hornet sportabout (sw)'",
+      "gold_sql": "SELECT T1.Accelerate FROM CARS_DATA AS T1 JOIN CAR_NAMES AS T2 ON T1.Id  =  T2.MakeId WHERE T2.Make  =  'amc hornet sportabout (sw)';",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "car_1",
+      "question": "What are the id and names of the countries which have more than 3 car makers or produce the 'fiat' model?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T1.countryId ,  T1.CountryName FROM Countries AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country GROUP BY T1.countryId HAVING count(*)  >  3 UNION SELECT T1.countryId ,  T1.CountryName FROM Countries AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country JOIN MODEL_LIST AS T3 ON T2.Id  =  T3.Maker WHERE T3.Model  =  'fiat';",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "car_1",
+      "question": "Which model of the car has the minimum horsepower?",
+      "predicted_sql": "\nSELECT cn.Model\nFROM car_names cn\nJOIN cars_data cd ON cn.MakeId = cd.Id\nWHERE cd.Horsepower = (SELECT MIN(Horsepower) FROM cars_data WHERE Horsepower IS NOT NULL)\n",
+      "gold_sql": "SELECT T1.Model FROM CAR_NAMES AS T1 JOIN CARS_DATA AS T2 ON T1.MakeId  =  T2.Id ORDER BY T2.horsepower ASC LIMIT 1;",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=1 rows, predicted=17 rows",
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "orchestra",
+      "question": "List the names of conductors in ascending order of age.",
+      "predicted_sql": "SELECT Name FROM conductor ORDER BY Age ASC",
+      "gold_sql": "SELECT Name FROM conductor ORDER BY Age ASC",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "orchestra",
+      "question": "List names of conductors in descending order of years of work.",
+      "predicted_sql": "SELECT Name FROM conductor ORDER BY Year_of_Work DESC",
+      "gold_sql": "SELECT Name FROM conductor ORDER BY Year_of_Work DESC",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "orchestra",
+      "question": "Show the names of conductors and the orchestras they have conducted.",
+      "predicted_sql": "\nSELECT c.Name, o.Orchestra\nFROM conductor c\nJOIN orchestra o ON c.Conductor_ID = o.Conductor_ID\n",
+      "gold_sql": "SELECT T1.Name ,  T2.Orchestra FROM conductor AS T1 JOIN orchestra AS T2 ON T1.Conductor_ID  =  T2.Conductor_ID",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "orchestra",
+      "question": "Return the names of conductors that do not have the nationality \"USA\".",
+      "predicted_sql": null,
+      "gold_sql": "SELECT Name FROM conductor WHERE Nationality != 'USA'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "orchestra",
+      "question": "What are the record companies of orchestras in descending order of years in which they were founded?",
+      "predicted_sql": "SELECT Record_Company FROM orchestra ORDER BY Year_of_Founded DESC",
+      "gold_sql": "SELECT Record_Company FROM orchestra ORDER BY Year_of_Founded DESC",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "voter_1",
+      "question": "What are the distinct states and create time of all votes?",
+      "predicted_sql": "SELECT DISTINCT state, created FROM VOTES",
+      "gold_sql": "SELECT DISTINCT state ,  created FROM votes",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 4,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "voter_1",
+      "question": "What is last date created of votes from the state 'CA'?",
+      "predicted_sql": "SELECT MAX(created) AS last_date_created FROM VOTES WHERE state = 'CA'",
+      "gold_sql": "SELECT max(created) FROM votes WHERE state  =  'CA'",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "voter_1",
+      "question": "What are the contestant numbers and names of the contestants who had at least two votes?",
+      "predicted_sql": "\nSELECT C.contestant_number, C.contestant_name\nFROM CONTESTANTS C\nJOIN VOTES V ON C.contestant_number = V.contestant_number\nGROUP BY C.contestant_number, C.contestant_name\nHAVING COUNT(V.vote_id) >= 2\n",
+      "gold_sql": "SELECT T1.contestant_number , T1.contestant_name FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number GROUP BY T1.contestant_number HAVING count(*)  >=  2",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "voter_1",
+      "question": "How many contestants did not get voted?",
+      "predicted_sql": "SELECT COUNT(*) AS contestants_not_voted\nFROM CONTESTANTS\nWHERE contestant_number NOT IN (SELECT DISTINCT contestant_number FROM VOTES)",
+      "gold_sql": "SELECT count(*) FROM contestants WHERE contestant_number NOT IN ( SELECT contestant_number FROM votes )",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "voter_1",
+      "question": "What are the names of the contestants whose names are not 'Jessie Alloway'",
+      "predicted_sql": null,
+      "gold_sql": "SELECT contestant_name FROM contestants WHERE contestant_name != 'Jessie Alloway'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "poker_player",
+      "question": "What is the maximum number of final tables made among poker players with earnings less than 200000?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT max(Final_Table_Made) FROM poker_player WHERE Earnings  <  200000",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "poker_player",
+      "question": "Give average earnings of poker players who are taller than 200.",
+      "predicted_sql": "SELECT AVG(pp.Earnings) \nFROM poker_player pp\nJOIN people p ON pp.People_ID = p.People_ID\nWHERE p.Height > 200",
+      "gold_sql": "SELECT avg(T2.Earnings) FROM people AS T1 JOIN poker_player AS T2 ON T1.People_ID  =  T2.People_ID WHERE T1.Height  >  200",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "poker_player",
+      "question": "What is the average earnings of poker players with height higher than 200?",
+      "predicted_sql": "\nSELECT AVG(pp.Earnings)\nFROM poker_player pp\nJOIN people p ON pp.People_ID = p.People_ID\nWHERE p.Height > 200\n",
+      "gold_sql": "SELECT avg(T2.Earnings) FROM people AS T1 JOIN poker_player AS T2 ON T1.People_ID  =  T2.People_ID WHERE T1.Height  >  200",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 4,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "poker_player",
+      "question": "Return the names of all the poker players.",
+      "predicted_sql": "SELECT p.Name FROM people p JOIN poker_player pp ON p.People_ID = pp.People_ID",
+      "gold_sql": "SELECT T1.Name FROM people AS T1 JOIN poker_player AS T2 ON T1.People_ID  =  T2.People_ID",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "poker_player",
+      "question": "What are the names of poker players, ordered ascending by the number of final tables they have made?",
+      "predicted_sql": "\nSELECT p.Name\nFROM poker_player pp\nJOIN people p ON pp.People_ID = p.People_ID\nORDER BY pp.Final_Table_Made ASC\n",
+      "gold_sql": "SELECT T1.Name FROM people AS T1 JOIN poker_player AS T2 ON T1.People_ID  =  T2.People_ID ORDER BY T2.Final_Table_Made",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "employee_hire_evaluation",
+      "question": "What is the number of employees from each city?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT count(*) ,  city FROM employee GROUP BY city",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "employee_hire_evaluation",
+      "question": "Find the manager name and district of the shop whose number of products is the largest.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT manager_name ,  district FROM shop ORDER BY number_products DESC LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "employee_hire_evaluation",
+      "question": "Which district has both stores with less than 3000 products and stores with more than 10000 products?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT district FROM shop WHERE Number_products  <  3000 INTERSECT SELECT district FROM shop WHERE Number_products  >  10000",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "employee_hire_evaluation",
+      "question": "Sort all the shops by number products in descending order, and return the name, location and district of each shop.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT name ,  LOCATION ,  district FROM shop ORDER BY number_products DESC",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "employee_hire_evaluation",
+      "question": "For each shop, return the number of employees working there and the name of the shop.",
+      "predicted_sql": "\nSELECT s.Name, COUNT(h.Employee_ID) AS Number_of_Employees\nFROM shop s\nJOIN hiring h ON s.Shop_ID = h.Shop_ID\nGROUP BY s.Shop_ID, s.Name\n",
+      "gold_sql": "SELECT count(*) ,  t2.name FROM hiring AS t1 JOIN shop AS t2 ON t1.shop_id  =  t2.shop_id GROUP BY t2.name",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "world_1",
+      "question": "What is the number of distinct continents where Chinese is spoken?",
+      "predicted_sql": "\nSELECT COUNT(DISTINCT c.Continent) AS num_continents\nFROM countrylanguage cl\nJOIN country c ON cl.CountryCode = c.Code\nWHERE cl.Language = 'Chinese'\n",
+      "gold_sql": "SELECT COUNT( DISTINCT Continent) FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"Chinese\"",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "world_1",
+      "question": "What is the total number of languages used in Aruba?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT COUNT(T2.Language) FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T1.Name  =  \"Aruba\"",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "world_1",
+      "question": "What are the codes of countries where Spanish is spoken by the largest percentage of people?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  \"Spanish\" GROUP BY CountryCode",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "world_1",
+      "question": "Return the codes of countries that do not speak English and do not have Republics for governments.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT Code FROM country WHERE GovernmentForm != \"Republic\" EXCEPT SELECT CountryCode FROM countrylanguage WHERE LANGUAGE  =  \"English\"",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "world_1",
+      "question": "What are the population, name and leader of the country with the largest area?",
+      "predicted_sql": "SELECT Population, Name, HeadOfState FROM country ORDER BY SurfaceArea DESC LIMIT 1;",
+      "gold_sql": "SELECT Name ,  population ,  HeadOfState FROM country ORDER BY SurfaceArea DESC LIMIT 1",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "student_transcripts_tracking",
+      "question": "What are the different addresses that have students living there?",
+      "predicted_sql": "\nSELECT DISTINCT a.*\nFROM Addresses a\nWHERE a.address_id IN (\n    SELECT current_address_id FROM Students\n    UNION\n    SELECT permanent_address_id FROM Students\n)\n",
+      "gold_sql": "SELECT count(DISTINCT current_address_id) FROM Students",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=1 rows, predicted=14 rows",
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "student_transcripts_tracking",
+      "question": "Who is enrolled in a Bachelor degree program? List the first name, middle name, last name.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT DISTINCT T1.first_name ,  T1.middle_name ,  T1.last_name FROM Students AS T1 JOIN Student_Enrolment AS T2 ON T1.student_id  =  T2.student_id JOIN Degree_Programs AS T3 ON T2.degree_program_id  =  T3.degree_program_id WHERE T3.degree_summary_name  =  'Bachelor'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "student_transcripts_tracking",
+      "question": "What is the name of the course with the most students enrolled?",
+      "predicted_sql": "\nSELECT c.course_name, COUNT(sec.student_course_id) AS enrolment_count\nFROM Courses c\nJOIN Student_Enrolment_Courses sec ON c.course_id = sec.course_id\nGROUP BY c.course_id, c.course_name\nORDER BY enrolment_count DESC\nLIMIT 1\n",
+      "gold_sql": "SELECT  T1.course_name FROM Courses AS T1 JOIN Student_Enrolment_Courses AS T2 ON T1.course_id  =  T2.course_id GROUP BY T1.course_name ORDER BY count(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "column_count_mismatch",
+      "detail": "gold has 1 columns, predicted has 2",
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "student_transcripts_tracking",
+      "question": "What is the zip code for Port Chelsea?",
+      "predicted_sql": "SELECT zip_postcode FROM Addresses WHERE city = 'Port Chelsea'",
+      "gold_sql": "SELECT zip_postcode FROM Addresses WHERE city  =  'Port Chelsea'",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "student_transcripts_tracking",
+      "question": "What are the first, middle, and last names for everybody enrolled in a Bachelors program?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT DISTINCT T1.first_name ,  T1.middle_name ,  T1.last_name FROM Students AS T1 JOIN Student_Enrolment AS T2 ON T1.student_id  =  T2.student_id JOIN Degree_Programs AS T3 ON T2.degree_program_id  =  T3.degree_program_id WHERE T3.degree_summary_name  =  'Bachelor'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "real_estate_properties",
+      "question": "How many available features are there in total?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT count(*) FROM Other_Available_Features",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "real_estate_properties",
+      "question": "What is the feature type name of feature AirCon?",
+      "predicted_sql": "\nSELECT rft.feature_type_name\nFROM Other_Available_Features oaf\nJOIN Ref_Feature_Types rft ON oaf.feature_type_code = rft.feature_type_code\nWHERE oaf.feature_name = 'AirCon'\n",
+      "gold_sql": "SELECT T2.feature_type_name FROM Other_Available_Features AS T1 JOIN Ref_Feature_Types AS T2 ON T1.feature_type_code  =  T2.feature_type_code WHERE T1.feature_name  =  \"AirCon\"",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "real_estate_properties",
+      "question": "Show the property type descriptions of properties belonging to that code.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T2.property_type_description FROM Properties AS T1 JOIN Ref_Property_Types AS T2 ON T1.property_type_code  =  T2.property_type_code GROUP BY T1.property_type_code",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "real_estate_properties",
+      "question": "What are the names of properties that are either houses or apartments with more than 1 room?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT property_name FROM Properties WHERE property_type_code  =  \"House\" UNION SELECT property_name FROM Properties WHERE property_type_code  =  \"Apartment\" AND room_count  >  1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "network_1",
+      "question": "Show all the grades of the high schoolers.",
+      "predicted_sql": "SELECT grade FROM Highschooler",
+      "gold_sql": "SELECT grade FROM Highschooler",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "network_1",
+      "question": "Count the number of high schoolers in grades 9 or 10.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT count(*) FROM Highschooler WHERE grade  =  9 OR grade  =  10",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "network_1",
+      "question": "Show the ids of high schoolers who have friends and are also liked by someone else.",
+      "predicted_sql": "\nSELECT DISTINCT student_id \nFROM Friend\nWHERE student_id IN (SELECT liked_id FROM Likes)\n",
+      "gold_sql": "SELECT student_id FROM Friend INTERSECT SELECT liked_id FROM Likes",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "network_1",
+      "question": "Give the name of the student with the most likes.",
+      "predicted_sql": "\nSELECT H.name\nFROM Highschooler H\nJOIN Likes L ON H.ID = L.liked_id\nGROUP BY H.ID, H.name\nORDER BY COUNT(*) DESC\nLIMIT 1\n",
+      "gold_sql": "SELECT T2.name FROM Likes AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id GROUP BY T1.student_id ORDER BY count(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "network_1",
+      "question": "Show the student IDs and numbers of friends corresponding to each.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT student_id ,  count(*) FROM Friend GROUP BY student_id",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "cre_Doc_Template_Mgt",
+      "question": "Return the ids of templates that have the code PP or PPT.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT template_id FROM Templates WHERE template_type_code  =  \"PP\" OR template_type_code  =  \"PPT\"",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "cre_Doc_Template_Mgt",
+      "question": "What are the ids of documents that contain the paragraph text 'Brazil' and 'Ireland'?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "cre_Doc_Template_Mgt",
+      "question": "Count the number of paragraphs in the document named 'Summer Show'.",
+      "predicted_sql": "\nSELECT COUNT(*) AS paragraph_count\nFROM Paragraphs p\nJOIN Documents d ON p.Document_ID = d.Document_ID\nWHERE d.Document_Name = 'Summer Show'\n",
+      "gold_sql": "SELECT count(*) FROM Paragraphs AS T1 JOIN Documents AS T2 ON T1.document_ID  =  T2.document_ID WHERE T2.document_name  =  'Summer Show'",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "cre_Doc_Template_Mgt",
+      "question": "Show all template type codes and descriptions.",
+      "predicted_sql": "SELECT Template_Type_Code, Template_Type_Description FROM Ref_Template_Types",
+      "gold_sql": "SELECT template_type_code ,  template_type_description FROM Ref_template_types",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "cre_Doc_Template_Mgt",
+      "question": "Show the document id with paragraph text 'Brazil' and 'Ireland'.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "singer",
+      "question": "Please show the most common citizenship of singers.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT Citizenship FROM singer GROUP BY Citizenship ORDER BY COUNT(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "singer",
+      "question": "What are the birth year and citizenship of singers?",
+      "predicted_sql": "SELECT Birth_Year, Citizenship FROM singer",
+      "gold_sql": "SELECT Birth_Year ,  Citizenship FROM singer",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "singer",
+      "question": "Show the name of singers whose birth year is either 1948 or 1949?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT Name FROM singer WHERE Birth_Year  =  1948 OR Birth_Year  =  1949",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "singer",
+      "question": "What are the names of the singers who are not French citizens?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT Name FROM singer WHERE Citizenship != \"France\"",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "singer",
+      "question": "What are the names of the singers that have more than one songs?",
+      "predicted_sql": "\nSELECT s.Name\nFROM singer s\nJOIN song so ON s.Singer_ID = so.Singer_ID\nGROUP BY s.Singer_ID, s.Name\nHAVING COUNT(so.Song_ID) > 1\n",
+      "gold_sql": "SELECT T1.Name FROM singer AS T1 JOIN song AS T2 ON T1.Singer_ID  =  T2.Singer_ID GROUP BY T1.Name HAVING COUNT(*)  >  1",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "dog_kennels",
+      "question": "Tell me the age of the oldest dog.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT max(age) FROM Dogs",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "dog_kennels",
+      "question": "What is the average age of all the dogs?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT avg(age) FROM Dogs",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "dog_kennels",
+      "question": "What are each owner's first name, last name, and the size of their dog?",
+      "predicted_sql": "\nSELECT o.first_name, o.last_name, s.size_description\nFROM Owners o\nJOIN Dogs d ON o.owner_id = d.owner_id\nJOIN Sizes s ON d.size_code = s.size_code\n",
+      "gold_sql": "SELECT T1.first_name ,  T1.last_name ,  T2.size_code FROM Owners AS T1 JOIN Dogs AS T2 ON T1.owner_id  =  T2.owner_id",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "dog_kennels",
+      "question": "How much does the most expensive charge type costs?",
+      "predicted_sql": "SELECT MAX(charge_amount) FROM Charges",
+      "gold_sql": "SELECT max(charge_amount) FROM Charges",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "dog_kennels",
+      "question": "Which owners live in the state whose name contains the substring 'North'? List his first name, last name and email.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT first_name ,  last_name ,  email_address FROM Owners WHERE state LIKE '%North%'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "wta_1",
+      "question": "Find the number of left handed winners who participated in the WTA Championships.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT count(DISTINCT winner_name) FROM matches WHERE tourney_name  =  'WTA Championships' AND winner_hand  =  'L'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "wta_1",
+      "question": "What is the name of the winner with the most rank points who participated in the Australian Open tournament?",
+      "predicted_sql": "SELECT winner_name \nFROM matches \nWHERE tourney_name = 'Australian Open' \nORDER BY winner_rank_points DESC \nLIMIT 1;",
+      "gold_sql": "SELECT winner_name FROM matches WHERE tourney_name  =  'Australian Open' ORDER BY winner_rank_points DESC LIMIT 1",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
+    },
+    {
+      "db_id": "wta_1",
+      "question": "What is the first name and country code of the oldest player?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT first_name ,  country_code FROM players ORDER BY birth_date LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "wta_1",
+      "question": "What are the first names and country codes for players who won both the WTA Championships and the Australian Open?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T1.country_code ,  T1.first_name FROM players AS T1 JOIN matches AS T2 ON T1.player_id  =  T2.winner_id WHERE T2.tourney_name  =  'WTA Championships' INTERSECT SELECT T1.country_code ,  T1.first_name FROM players AS T1 JOIN matches AS T2 ON T1.player_id  =  T2.winner_id WHERE T2.tourney_name  =  'Australian Open'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query.",
+      "turns": 10,
+      "hit_turn_limit": true
+    },
+    {
+      "db_id": "wta_1",
+      "question": "Find the number of distinct name of losers.",
+      "predicted_sql": "SELECT COUNT(DISTINCT loser_name) FROM matches",
+      "gold_sql": "SELECT count(DISTINCT loser_name) FROM matches",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false
     }
   ]
 }
