@@ -23,6 +23,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 
 import spider_agent_workbench.agent as agent_workbench
+import spider_agent_workbench.agent_builder_factory as agent_builder_factory
 import spider_agent_workbench.loaders as loaders
 import spider_agent_workbench.logging_config as logging_config
 import spider_agent_workbench.paths as paths
@@ -81,7 +82,7 @@ def chunk_for_workers(
 def run_worker(
     worker_id: int, db_examples: dict[str, list[loaders.SpiderExample]], prompt_version: str
 ) -> list[dict]:
-    agent = agent_workbench.build_agent(prompt_version=prompt_version)
+    agent = agent_builder_factory.build_agent(prompt_version=prompt_version)
     total = sum(len(examples) for examples in db_examples.values())
     total_dbs = len(db_examples)
     done = 0

@@ -40,7 +40,7 @@ from spider_agent_workbench.eval.sql_features import tag_features
 logger = logging.getLogger(__name__)
 
 DEFAULT_SEED = 42
-DEFAULT_NUM_DBS = 20
+DEFAULT_NUM_DBS = 4
 DEFAULT_QUESTIONS_PER_DB = 5
 DEFAULT_NUM_WORKERS = 4
 DEFAULT_PROMPT_VERSION = "prompt_v3"

@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Callable
 
 from spider_agent_workbench import agent as agent_workbench
+from spider_agent_workbench import agent_builder_factory
 from spider_agent_workbench.agent import AgentAnswer
 from spider_agent_workbench.eval import exact_match, sql_result_scorer
 from spider_agent_workbench.eval.exact_match import ExactMatchResult
@@ -121,7 +122,7 @@ def run_eval(
     crash and can be inspected without re-running.
     """
     if agent_factory is None:
-        agent_factory = lambda: agent_workbench.build_agent(prompt_version=prompt_version)
+        agent_factory = lambda: agent_builder_factory.build_agent(prompt_version=prompt_version)
     if answer_fn is None:
         answer_fn = agent_workbench.answer_question
     if score_fn is None:

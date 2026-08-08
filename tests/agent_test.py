@@ -1,9 +1,9 @@
-"""Tests for agent.py — load_system_prompt, _extract_final_sql, answer_question, build_agent.
+"""Tests for agent.py — _extract_final_sql, answer_question.
 
 The langchain/langgraph agent graph itself is never invoked for real (no network
 calls, no API key required): `agent` is passed into answer_question as a mock
-with a canned `.invoke()` return value, and build_agent's collaborators
-(ChatAnthropic, create_agent) are monkeypatched.
+with a canned `.invoke()` return value. build_agent's own tests (and its
+collaborators' monkeypatches) live in agent_builder_factory_test.py.
 """
 
 from unittest.mock import MagicMock
@@ -15,44 +15,10 @@ from langgraph.errors import GraphRecursionError
 from spider_agent_workbench import agent as agent_module
 from spider_agent_workbench.agent import (
     AgentAnswer,
-    DEFAULT_PROMPT_VERSION,
-    TOOLS,
     _extract_final_sql,
     answer_question,
-    build_agent,
-    load_system_prompt,
 )
 from spider_agent_workbench.constants import DEFAULT_MAX_TURNS
-
-
-# load_system_prompt
-#   default version loads real prompt_v2.md content
-#   leading "<!-- ... -->" changelog lines are stripped
-#   unknown version raises
-
-
-def test_load_system_prompt_returns_non_empty_text_for_default_version():
-    prompt = load_system_prompt()
-    assert prompt.strip() != ""
-    assert not prompt.startswith("<!--")
-
-
-def test_load_system_prompt_strips_leading_changelog_comment(tmp_path, monkeypatch):
-    monkeypatch.setattr(agent_module, "PROMPTS_DIR", tmp_path)
-    (tmp_path / "prompt_vtest.md").write_text(
-        "<!-- vtest: scratch prompt for this test -->\nYou are a helpful assistant.",
-        encoding="utf-8",
-    )
-
-    prompt = load_system_prompt("prompt_vtest")
-
-    assert prompt == "You are a helpful assistant."
-
-
-def test_load_system_prompt_raises_for_unknown_version(tmp_path, monkeypatch):
-    monkeypatch.setattr(agent_module, "PROMPTS_DIR", tmp_path)
-    with pytest.raises(FileNotFoundError):
-        load_system_prompt("prompt_does_not_exist")
 
 
 # _extract_final_sql
@@ -343,31 +309,6 @@ def test_answer_question_reports_latency_on_recursion_error(db_dir, db_id, monke
 
     assert result.hit_turn_limit is True
     assert result.latency_seconds == pytest.approx(4.0)
-
-
-# build_agent
-#   wires ChatAnthropic + create_agent together with the module's tool list
-#   and the loaded system prompt, without making a real network call
-
-
-def test_build_agent_wires_model_tools_and_prompt(monkeypatch):
-    mock_model_instance = MagicMock(name="chat_anthropic_instance")
-    chat_anthropic_mock = MagicMock(return_value=mock_model_instance)
-    create_agent_mock = MagicMock(return_value="compiled-graph")
-    monkeypatch.setattr(agent_module, "ChatAnthropic", chat_anthropic_mock)
-    monkeypatch.setattr(agent_module, "create_agent", create_agent_mock)
-
-    result = build_agent(model_name="claude-test-model", prompt_version=DEFAULT_PROMPT_VERSION)
-
-    chat_anthropic_mock.assert_called_once()
-    assert chat_anthropic_mock.call_args.kwargs["model"] == "claude-test-model"
-
-    create_agent_mock.assert_called_once_with(
-        model=mock_model_instance,
-        tools=TOOLS,
-        system_prompt=load_system_prompt(DEFAULT_PROMPT_VERSION),
-    )
-    assert result == "compiled-graph"
 
 
 # AgentAnswer

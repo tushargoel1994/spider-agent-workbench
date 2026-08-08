@@ -230,7 +230,7 @@ def test_run_eval_uses_real_collaborators_by_default(monkeypatch):
         em_calls.append((db_id, predicted_sql, gold_sql))
         return ExactMatchResult(score=1, hardness="easy")
 
-    monkeypatch.setattr(runner_module.agent_workbench, "build_agent", fake_build_agent)
+    monkeypatch.setattr(runner_module.agent_builder_factory, "build_agent", fake_build_agent)
     monkeypatch.setattr(runner_module.agent_workbench, "answer_question", fake_answer_question)
     monkeypatch.setattr(runner_module.sql_result_scorer, "score_query", fake_score_query)
     monkeypatch.setattr(runner_module.exact_match, "score_exact_match", fake_score_exact_match)

@@ -27,7 +27,7 @@ This project uses **uv** for dependency and environment management (`.python-ver
 - Run the test suite: `uv run pytest`
 - Run a single test file: `uv run pytest tests/guardrails/test_sql_guardrails.py -q`
 - Pull the Spider dataset split from HF into local xlsx cache: `uv run scripts/download_hf_dataset_cache.py`
-- Requires a `.env` at the repo root with `ANTHROPIC_API_KEY=...` (loaded via `pydantic-settings` in `config.py`)
+- Requires a `.env` at the repo root with `MODEL_PROVIDER` (`anthropic` or `deepseek`) plus that provider's API key and default model — `ANTHROPIC_API_KEY`/`ANTHROPIC_DEFAULT_MODEL` and/or `DEEPSEEK_API_KEY`/`DEEPSEEK_DEFAULT_MODEL` (all loaded via `pydantic-settings` in `config.py`)
 
 There is no lint or format tooling configured yet (no ruff config in `pyproject.toml`). If asked to add linting, check `pyproject.toml` first since this file will go stale. `scripts/phase_1_test.py` (runs the agent end-to-end and scores it via `eval/sql_result_scorer.py`) is a separate manual eval script, not part of the `pytest` suite — see the Testing section below for that.
 
@@ -35,7 +35,7 @@ There is no lint or format tooling configured yet (no ruff config in `pyproject.
 
 - Tests live under `tests/` and run via `uv run pytest` — `pytest` is a dev dependency (`[dependency-groups] dev` in `pyproject.toml`), configured with `testpaths = ["tests"]` under `[tool.pytest.ini_options]`.
 - `tests/conftest.py` provides `db_dir`/`db_id` fixtures: a throwaway fixture sqlite database (`students`/`courses` tables, seeded with a few rows) built fresh in a `tmp_path` per test, so tests never depend on the gitignored `data/` dataset.
-- Current coverage: `tests/guardrails/` (`test_input_guardrail.py`, `test_output_guardrail.py`, `test_sql_guardrails.py`), `tests/test_schema.py`, `tests/test_tools.py`, `tests/test_executor.py`, `tests/agent_test.py`, `tests/eval/test_sql_result_scorer.py`. `loaders.py` and `utils.py` have no tests yet.
+- Current coverage: `tests/guardrails/` (`test_input_guardrail.py`, `test_output_guardrail.py`, `test_sql_guardrails.py`), `tests/test_schema.py`, `tests/test_tools.py`, `tests/test_executor.py`, `tests/agent_test.py`, `tests/agent_builder_factory_test.py`, `tests/eval/test_sql_result_scorer.py`. `loaders.py` and `utils.py` have no tests yet.
 - **Write the test before writing the implementation.** For any new function, guardrail, or bugfix: add (or update) a failing test in the relevant `tests/test_*.py` file first, run `uv run pytest` to confirm it fails for the expected reason, then write the minimal code to make it pass. This applies to bugfixes too — reproduce the bug as a failing test before patching it.
 
 ## What this project is
@@ -48,7 +48,8 @@ Data flow, in order:
 
 - `loaders.py` — reads cached HF Spider xlsx, groups examples by `db_id`.
 - `schema.py` — lists tables / renders a table's `CREATE TABLE` via `sqlite_master`.
-- `agent.py` — builds a langchain/langgraph tool-calling agent from a versioned system prompt, loops until `submit_final_sql` is called or `max_turns` is hit.
+- `agent_builder_factory.py` — builds a langchain/langgraph tool-calling agent from a versioned system prompt (model/provider wiring lives here, kept separate so swapping models doesn't touch the run loop).
+- `agent.py` — runs the agent loop (via a `build_agent`-constructed agent) until `submit_final_sql` is called or `max_turns` is hit.
 - `tools.py` — `list_tables`, `describe_table`, `sample_rows`, `run_query`, `submit_final_sql`, each routed through `guardrails.sql_guardrails.validate_sql`. `agent.py` also runs `guardrails.input_guardrails` before the loop starts and `guardrails.output_guardrails` on the final submitted SQL.
 - `executor.py` — raw sqlite3 execution with timeout + row cap, raises on error.
 - `eval/sql_result_scorer.py` — scores one predicted SQL query against gold SQL, EX-style set/multiset row comparison.
@@ -60,7 +61,7 @@ data/spider/database/<db_id>/<db_id>.sqlite   # official Spider release SQLite f
 data/hf_xlangai_spider/{train,validation}_spider.xlsx  # cached via scripts/download_hf_dataset_cache.py
 src/spider_agent_workbench/
   paths.py         # PROJECT_ROOT-relative path constants, loads .env
-  config.py        # pydantic-settings Settings (ANTHROPIC_API_KEY)
+  config.py        # pydantic-settings Settings (MODEL_PROVIDER + per-provider API key/default model)
   loaders.py       # HF split -> SpiderExample, grouped/filtered by db_id
   schema.py        # list_databases, get_table_list, get_table_info, get_column_list
   executor.py       # execute_query -> QueryResult (headers/rows/truncated)
@@ -72,13 +73,14 @@ src/spider_agent_workbench/
     sql_guardrails.py      # validate_sql: read-only, length cap, join/subquery caps, schema-table + schema-column checks
     output_guardrails.py   # dry-run parses/validates/executes the agent's final submitted SQL
   tools.py          # LangChain @tool wrappers around schema/executor, guardrail-checked
-  agent.py          # build_agent / answer_question (langchain+langgraph ReAct loop)
+  agent_builder_factory.py   # build_agent / load_system_prompt / TOOLS (model+prompt+tool wiring)
+  agent.py          # answer_question (langchain+langgraph ReAct loop), calls build_agent when no agent is passed in
   utils.py          # format_result_table (pipe-table rendering for tool output)
   prompts/prompt_v*.md   # versioned system prompts, never edited in place
   eval/sql_result_scorer.py   # score_query(): predicted vs gold SQL, binary EX-style match; importable from notebooks and scripts
   eval/metrics.py, eval/runner.py   # stubs — aggregate EX/EM scoring + batch runner not yet built
 scripts/            # one-off/setup scripts (dataset download, connection smoke tests, phase_N_test.py)
-tests/              # pytest suite — conftest.py fixtures + guardrails/, test_schema.py, test_tools.py, test_executor.py, agent_test.py, eval/
+tests/              # pytest suite — conftest.py fixtures + guardrails/, test_schema.py, test_tools.py, test_executor.py, agent_test.py, agent_builder_factory_test.py, eval/
 docs/reports/       # phase-by-phase progress notes (phase_0.md, phase_1.md, phase_2.md, ...)
 ```
 

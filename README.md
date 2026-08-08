@@ -15,7 +15,7 @@
 ## Project setup
 
 - Requires [uv](https://docs.astral.sh/uv/) for dependency and environment management (`.python-version` pins 3.11).
-- Requires a `.env` file at the repo root with `ANTHROPIC_API_KEY=...`.
+- Requires a `.env` file at the repo root with `MODEL_PROVIDER=anthropic` (or `deepseek`), plus that provider's API key and default model — `ANTHROPIC_API_KEY`/`ANTHROPIC_DEFAULT_MODEL` and/or `DEEPSEEK_API_KEY`/`DEEPSEEK_DEFAULT_MODEL`.
 - Install dependencies: `uv sync`
 - Pull the Spider dataset split into a local xlsx cache: `uv run scripts/download_hf_dataset_cache.py`
 - Add the official Spider release `.sqlite` files under `data/spider/database/` (downloaded separately, not via the HF cache).
