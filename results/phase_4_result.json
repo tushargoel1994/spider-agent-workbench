@@ -1,0 +1,593 @@
+{
+  "meta": {
+    "sample_seed": 42,
+    "num_db": 4,
+    "questions_per_db": 5,
+    "total_questions": 20,
+    "split": "validation",
+    "prompt_version": "prompt_v3",
+    "generated_at": "2026-08-06T18:03:47.169121+00:00",
+    "log_path": "C:\\Users\\tusha\\Documents\\github Repos\\spider-agent-workbench\\logs\\phase_4_run_2026-08-06-18-02-20.jsonl"
+  },
+  "ex_summary": {
+    "total_questions": 20,
+    "total_score": 11,
+    "accuracy": 0.55,
+    "by_status": {
+      "match": {
+        "score": 11,
+        "total": 11
+      },
+      "value_mismatch": {
+        "score": 0,
+        "total": 1
+      },
+      "no_sql": {
+        "score": 0,
+        "total": 5
+      },
+      "column_count_mismatch": {
+        "score": 0,
+        "total": 1
+      },
+      "row_count_mismatch": {
+        "score": 0,
+        "total": 2
+      }
+    },
+    "by_db_id": {
+      "cre_Docs_and_Epenses": {
+        "score": 3,
+        "total": 5
+      },
+      "baseball_1": {
+        "score": 2,
+        "total": 5
+      },
+      "insurance_fnol": {
+        "score": 2,
+        "total": 5
+      },
+      "game_injury": {
+        "score": 4,
+        "total": 5
+      }
+    },
+    "by_difficulty": {
+      "hard": {
+        "score": 1,
+        "total": 2
+      },
+      "extra": {
+        "score": 1,
+        "total": 5
+      },
+      "medium": {
+        "score": 9,
+        "total": 11
+      },
+      "easy": {
+        "score": 0,
+        "total": 2
+      }
+    }
+  },
+  "em_summary": {
+    "total_questions": 20,
+    "total_score": 1,
+    "accuracy": 0.05,
+    "by_difficulty": {
+      "hard": {
+        "score": 1,
+        "total": 2
+      },
+      "extra": {
+        "score": 0,
+        "total": 5
+      },
+      "medium": {
+        "score": 0,
+        "total": 11
+      },
+      "easy": {
+        "score": 0,
+        "total": 2
+      }
+    },
+    "by_db_id": {
+      "cre_Docs_and_Epenses": {
+        "score": 1,
+        "total": 5
+      },
+      "baseball_1": {
+        "score": 0,
+        "total": 5
+      },
+      "insurance_fnol": {
+        "score": 0,
+        "total": 5
+      },
+      "game_injury": {
+        "score": 0,
+        "total": 5
+      }
+    }
+  },
+  "feature_summary": {
+    "has_join": {
+      "score": 6,
+      "total": 11,
+      "accuracy": 0.5454545454545454
+    },
+    "has_group_by": {
+      "score": 6,
+      "total": 10,
+      "accuracy": 0.6
+    },
+    "has_subquery": {
+      "score": 0,
+      "total": 0,
+      "accuracy": 0.0
+    },
+    "has_set_op": {
+      "score": 1,
+      "total": 3,
+      "accuracy": 0.3333333333333333
+    }
+  },
+  "guardrail_summary": {
+    "by_status": {
+      "value_mismatch": 1,
+      "no_sql": 5,
+      "column_count_mismatch": 1,
+      "row_count_mismatch": 2
+    },
+    "by_difficulty": {
+      "extra": {
+        "value_mismatch": 1,
+        "no_sql": 3
+      },
+      "easy": {
+        "column_count_mismatch": 1,
+        "no_sql": 1
+      },
+      "hard": {
+        "row_count_mismatch": 1
+      },
+      "medium": {
+        "no_sql": 1,
+        "row_count_mismatch": 1
+      }
+    }
+  },
+  "operational_summary": {
+    "avg_turns": 6.75,
+    "avg_latency_seconds": 16.208103835000657,
+    "avg_input_tokens": 16945.6,
+    "avg_output_tokens": 988.05,
+    "total_input_tokens": 338912,
+    "total_output_tokens": 19761
+  },
+  "results": [
+    {
+      "db_id": "cre_Docs_and_Epenses",
+      "question": "What is the id of the project with least number of documents?",
+      "predicted_sql": "SELECT Project_ID FROM Documents GROUP BY Project_ID ORDER BY COUNT(*) ASC LIMIT 1",
+      "gold_sql": "SELECT project_id FROM Documents GROUP BY project_id ORDER BY count(*) ASC LIMIT 1",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 1,
+      "difficulty": "hard",
+      "latency_seconds": 14.910082699963823,
+      "input_tokens": 24189,
+      "output_tokens": 1366,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Docs_and_Epenses",
+      "question": "What are the type come, name, and description of the document that has either the name 'Noel CV' or 'King Book'?",
+      "predicted_sql": "SELECT r.Document_Type_Name, d.Document_Name, d.Document_Description FROM Documents d JOIN Ref_Document_Types r ON d.Document_Type_Code = r.Document_Type_Code WHERE d.Document_Name IN ('Noel CV', 'King Book')",
+      "gold_sql": "SELECT document_type_code ,  document_name ,  document_description FROM Documents WHERE document_name  =  'Noel CV' OR document_name  =  'King Book'",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 15.339048100053333,
+      "input_tokens": 20403,
+      "output_tokens": 1330,
+      "has_join": false,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Docs_and_Epenses",
+      "question": "What are the statement id and statement detail for the statement that has the most corresponding accounts?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T1.statement_id ,  T2.statement_details FROM Accounts AS T1 JOIN Statements AS T2 ON T1.statement_id  =  T2.statement_id GROUP BY T1.statement_id ORDER BY count(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 19.167383800027892,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Docs_and_Epenses",
+      "question": "What are the different budget type codes, and how many documents are there for each?",
+      "predicted_sql": "SELECT dwe.Budget_Type_Code, COUNT(dwe.Document_ID) as Document_Count FROM Documents_with_Expenses dwe GROUP BY dwe.Budget_Type_Code",
+      "gold_sql": "SELECT budget_type_code ,  count(*) FROM Documents_with_expenses GROUP BY budget_type_code",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 15.286360300029628,
+      "input_tokens": 19882,
+      "output_tokens": 1394,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Docs_and_Epenses",
+      "question": "What are the different statement ids on accounts, and the number of accounts for each?",
+      "predicted_sql": "SELECT Statement_ID, COUNT(*) as Account_Count FROM Accounts GROUP BY Statement_ID ORDER BY Statement_ID",
+      "gold_sql": "SELECT STATEMENT_ID ,  count(*) FROM Accounts GROUP BY STATEMENT_ID",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 21.50530299998354,
+      "input_tokens": 22449,
+      "output_tokens": 1226,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "Which states have more than 2 parks?",
+      "predicted_sql": "SELECT state, COUNT(*) as park_count FROM park GROUP BY state HAVING COUNT(*) > 2",
+      "gold_sql": "SELECT state FROM park GROUP BY state HAVING count(*)  >  2;",
+      "score": 0,
+      "status": "column_count_mismatch",
+      "detail": "gold has 1 columns, predicted has 2",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "easy",
+      "latency_seconds": 12.523341299965978,
+      "input_tokens": 18197,
+      "output_tokens": 1052,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "What were all the salary values of players in 2010 and 2001?",
+      "predicted_sql": "SELECT salary FROM salary WHERE year IN (2010, 2001)",
+      "gold_sql": "SELECT salary FROM salary WHERE YEAR  =  2010 UNION SELECT salary FROM salary WHERE YEAR  =  2001",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=549 rows, predicted=1690 rows",
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 10.139649700024165,
+      "input_tokens": 21844,
+      "output_tokens": 984,
+      "has_join": false,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "What are first and last names of players participating in all star game in 1998?",
+      "predicted_sql": "SELECT p.name_first, p.name_last FROM player p JOIN all_star a ON p.player_id = a.player_id WHERE a.year = 1998 ORDER BY p.name_last, p.name_first",
+      "gold_sql": "SELECT name_first ,  name_last FROM player AS T1 JOIN all_star AS T2 ON T1.player_id  =  T2.player_id WHERE YEAR  =  1998",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 15.452197200036608,
+      "input_tokens": 24885,
+      "output_tokens": 1370,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "Compute the average salary of the players in the team called 'Boston Red Stockings'.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT avg(T1.salary) FROM salary AS T1 JOIN team AS T2 ON T1.team_id  =  T2.team_id_br WHERE T2.name  = 'Boston Red Stockings'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 22.781494199996814,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "For each year, return the year and the average number of attendance at home games.",
+      "predicted_sql": "SELECT year, AVG(attendance) as average_attendance FROM home_game GROUP BY year ORDER BY year",
+      "gold_sql": "SELECT YEAR ,  avg(attendance) FROM home_game GROUP BY YEAR;",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 21.469828599947505,
+      "input_tokens": 23671,
+      "output_tokens": 1124,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "insurance_fnol",
+      "question": "Which services have been used more than twice in first notification of loss? Return the service name.",
+      "predicted_sql": "SELECT s.Service_name FROM First_Notification_of_Loss f JOIN Services s ON f.Service_ID = s.Service_ID GROUP BY s.Service_name HAVING COUNT(*) > 2",
+      "gold_sql": "SELECT t2.service_name FROM first_notification_of_loss AS t1 JOIN services AS t2 ON t1.service_id  =  t2.service_id GROUP BY t1.service_id HAVING count(*)  >  2",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 12.42245199996978,
+      "input_tokens": 19346,
+      "output_tokens": 1290,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "insurance_fnol",
+      "question": "What is the effective date of the claim that has the largest amount of total settlement?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT t1.Effective_Date FROM claims AS t1 JOIN settlements AS t2 ON t1.claim_id  =  t2.claim_id GROUP BY t1.claim_id ORDER BY sum(t2.settlement_amount) DESC LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 16.91653489996679,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "insurance_fnol",
+      "question": "Find the names of customers who have used both the service \"Close a policy\" and the service \"New policy application\".",
+      "predicted_sql": null,
+      "gold_sql": "SELECT t1.customer_name FROM customers AS t1 JOIN first_notification_of_loss AS t2 ON t1.customer_id  =  t2.customer_id JOIN services AS t3 ON t2.service_id  =  t3.service_id WHERE t3.service_name  =  \"Close a policy\" INTERSECT SELECT t1.customer_name FROM customers AS t1 JOIN first_notification_of_loss AS t2 ON t1.customer_id  =  t2.customer_id JOIN services AS t3 ON t2.service_id  =  t3.service_id WHERE t3.service_name  =  \"New policy application\"",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 16.60628900001757,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "insurance_fnol",
+      "question": "List all the customers in increasing order of IDs.",
+      "predicted_sql": "SELECT * FROM Customers ORDER BY Customer_ID ASC",
+      "gold_sql": "SELECT customer_id ,  customer_name FROM customers ORDER BY customer_id ASC",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 10.18081820011139,
+      "input_tokens": 17531,
+      "output_tokens": 867,
+      "has_join": false,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "insurance_fnol",
+      "question": "What are all the phone numbers?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT customer_phone FROM available_policies",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "easy",
+      "latency_seconds": 17.174513899954036,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": false,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "game_injury",
+      "question": "How many games has each stadium held?",
+      "predicted_sql": "SELECT s.name, COUNT(g.id) as games_held FROM stadium s LEFT JOIN game g ON s.id = g.stadium_id GROUP BY s.id, s.name",
+      "gold_sql": "SELECT T1.id ,  count(*) FROM stadium AS T1 JOIN game AS T2 ON T1.id  =  T2.stadium_id GROUP BY T1.id",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=12 rows, predicted=13 rows",
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 13.680910600000061,
+      "input_tokens": 24252,
+      "output_tokens": 1413,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "game_injury",
+      "question": "What is the season of the game which causes the player 'Walter Samuel' to get injured?",
+      "predicted_sql": "SELECT g.Season FROM game g INNER JOIN injury_accident ia ON g.id = ia.game_id WHERE ia.Player = 'Walter Samuel'",
+      "gold_sql": "SELECT T1.season FROM game AS T1 JOIN injury_accident AS T2 ON T1.id  =  T2.game_id WHERE T2.player  =  'Walter Samuel'",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 14.751473099924624,
+      "input_tokens": 25323,
+      "output_tokens": 1423,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "game_injury",
+      "question": "How many distinct kinds of injuries happened after season 2010?",
+      "predicted_sql": "SELECT COUNT(DISTINCT ia.Injury) AS distinct_injuries FROM injury_accident ia JOIN game g ON ia.game_id = g.id WHERE g.Season > 2010",
+      "gold_sql": "SELECT count(DISTINCT T1.injury) FROM injury_accident AS T1 JOIN game AS T2 ON T1.game_id  =  T2.id WHERE T2.season  >  2010",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 16.01370939996559,
+      "input_tokens": 25368,
+      "output_tokens": 1521,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "game_injury",
+      "question": "What are the ids, scores, and dates of the games which caused at least two injury accidents?",
+      "predicted_sql": "SELECT g.id, g.Score, g.Date FROM game g JOIN injury_accident ia ON g.id = ia.game_id GROUP BY g.id HAVING COUNT(ia.id) >= 2",
+      "gold_sql": "SELECT T1.id ,  T1.score ,  T1.date FROM game AS T1 JOIN injury_accident AS T2 ON T2.game_id  =  T1.id GROUP BY T1.id HAVING count(*)  >=  2",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "medium",
+      "latency_seconds": 17.456968300044537,
+      "input_tokens": 25605,
+      "output_tokens": 1612,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "game_injury",
+      "question": "Show the name, average attendance, total attendance for stadiums where no accidents happened.",
+      "predicted_sql": "SELECT s.name, s.Average_Attendance, s.Total_Attendance FROM stadium s WHERE s.id NOT IN (SELECT DISTINCT g.stadium_id FROM game g INNER JOIN injury_accident ia ON g.id = ia.game_id)",
+      "gold_sql": "SELECT name ,  average_attendance ,  total_attendance FROM stadium EXCEPT SELECT T2.name ,  T2.average_attendance ,  T2.total_attendance FROM game AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.id JOIN injury_accident AS T3 ON T1.id  =  T3.game_id",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 20.383718400029466,
+      "input_tokens": 25967,
+      "output_tokens": 1789,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    }
+  ]
+}

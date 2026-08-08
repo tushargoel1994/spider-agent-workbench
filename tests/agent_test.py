@@ -258,6 +258,93 @@ def test_answer_question_scales_recursion_limit_with_max_turns(db_dir, db_id):
     assert call_kwargs["config"]["recursion_limit"] == 3 * 2 + 1
 
 
+# answer_question — operational metrics (latency, token usage)
+#   latency_seconds measures only the agent.invoke(...) call itself
+#   input/output tokens are summed across every AIMessage's usage_metadata
+#   messages with no usage_metadata (None) are skipped, not a crash
+#   an input-guardrail short-circuit never calls invoke, so both are 0
+#   a GraphRecursionError still reports elapsed latency
+
+
+def test_answer_question_measures_latency_around_invoke_only(db_dir, db_id, monkeypatch):
+    mock_agent = MagicMock()
+    mock_agent.invoke.return_value = {"messages": []}
+
+    # Two perf_counter() reads bracket the invoke() call; anything else
+    # calling perf_counter() during this test would desync the sequence and
+    # fail loudly instead of silently passing.
+    times = iter([100.0, 102.5])
+    monkeypatch.setattr(agent_module.time, "perf_counter", lambda: next(times))
+
+    result = answer_question(db_id, "How many students are there?", agent=mock_agent, db_dir=db_dir)
+
+    assert result.latency_seconds == pytest.approx(2.5)
+
+
+def test_answer_question_sums_token_usage_across_ai_messages(db_dir, db_id):
+    mock_agent = MagicMock()
+    mock_agent.invoke.return_value = {
+        "messages": [
+            AIMessage(
+                content="",
+                tool_calls=[{"name": "list_tables", "args": {"db_id": db_id}, "id": "1"}],
+                usage_metadata={"input_tokens": 100, "output_tokens": 20, "total_tokens": 120},
+            ),
+            ToolMessage(content="students,courses", tool_call_id="1"),
+            AIMessage(
+                content="",
+                tool_calls=[
+                    {
+                        "name": "submit_final_sql",
+                        "args": {"db_id": db_id, "query": "SELECT COUNT(*) FROM students"},
+                        "id": "2",
+                    }
+                ],
+                usage_metadata={"input_tokens": 150, "output_tokens": 30, "total_tokens": 180},
+            ),
+        ]
+    }
+
+    result = answer_question(db_id, "How many students are there?", agent=mock_agent, db_dir=db_dir)
+
+    assert result.input_tokens == 250
+    assert result.output_tokens == 50
+
+
+def test_answer_question_ignores_ai_messages_without_usage_metadata(db_dir, db_id):
+    mock_agent = MagicMock()
+    mock_agent.invoke.return_value = {"messages": [AIMessage(content="thinking, no tool call yet")]}
+
+    result = answer_question(db_id, "How many students are there?", agent=mock_agent, db_dir=db_dir)
+
+    assert result.input_tokens == 0
+    assert result.output_tokens == 0
+
+
+def test_answer_question_reports_zero_latency_and_tokens_on_input_guardrail_short_circuit(db_dir, db_id):
+    mock_agent = MagicMock()
+    question = "x" * 1000  # over QUESTION_MAX_LENGTH
+
+    result = answer_question(db_id, question, agent=mock_agent, db_dir=db_dir)
+
+    assert result.latency_seconds == 0.0
+    assert result.input_tokens == 0
+    assert result.output_tokens == 0
+
+
+def test_answer_question_reports_latency_on_recursion_error(db_dir, db_id, monkeypatch):
+    mock_agent = MagicMock()
+    mock_agent.invoke.side_effect = GraphRecursionError("recursion limit reached")
+
+    times = iter([100.0, 104.0])
+    monkeypatch.setattr(agent_module.time, "perf_counter", lambda: next(times))
+
+    result = answer_question(db_id, "How many students are enrolled?", agent=mock_agent, db_dir=db_dir)
+
+    assert result.hit_turn_limit is True
+    assert result.latency_seconds == pytest.approx(4.0)
+
+
 # build_agent
 #   wires ChatAnthropic + create_agent together with the module's tool list
 #   and the loaded system prompt, without making a real network call
@@ -291,3 +378,6 @@ def test_agent_answer_defaults_notes_and_hit_turn_limit():
     answer = AgentAnswer(db_id="school", question="q", sql="SELECT 1", turns=1)
     assert answer.notes is None
     assert answer.hit_turn_limit is False
+    assert answer.latency_seconds == 0.0
+    assert answer.input_tokens == 0
+    assert answer.output_tokens == 0

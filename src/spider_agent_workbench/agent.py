@@ -6,6 +6,7 @@ schema with tools and only stops once it calls submit_final_sql.
 """
 
 from __future__ import annotations
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -61,6 +62,9 @@ class AgentAnswer:
     turns: int
     hit_turn_limit: bool = False
     notes: str | None = None
+    latency_seconds: float = 0.0
+    input_tokens: int = 0
+    output_tokens: int = 0
     # messages: list[BaseMessage] = field(default_factory=list)
 
 
@@ -72,6 +76,19 @@ def _extract_final_sql(messages: list[BaseMessage]) -> str | None:
                 if call["name"] == "submit_final_sql":
                     return call["args"].get("query")
     return None
+
+
+def _sum_token_usage(messages: list[BaseMessage]) -> tuple[int, int]:
+    """Sum input/output tokens across every AIMessage's usage_metadata (the
+    agent can take several turns per question, so no single message has the
+    total). usage_metadata is None on a message that didn't report usage."""
+    input_tokens = 0
+    output_tokens = 0
+    for message in messages:
+        if isinstance(message, AIMessage) and message.usage_metadata:
+            input_tokens += message.usage_metadata.get("input_tokens", 0)
+            output_tokens += message.usage_metadata.get("output_tokens", 0)
+    return input_tokens, output_tokens
 
 
 def answer_question(
@@ -105,12 +122,16 @@ def answer_question(
     # final turn's tool call.
     recursion_limit = max_turns * 2 + 1
 
+    # Brackets only the agent.invoke(...) call itself, not the guardrail
+    # checks before/after it, so latency_seconds measures LLM/tool time only.
+    start_time = time.perf_counter()
     try:
         result = agent.invoke(
             {"messages": [("user", user_prompt)]},
             config={"recursion_limit": recursion_limit},
         )
     except GraphRecursionError as e:
+        latency_seconds = time.perf_counter() - start_time
         return AgentAnswer(
             db_id=db_id,
             question=question,
@@ -118,13 +139,25 @@ def answer_question(
             turns=max_turns,
             hit_turn_limit=True,
             notes=f"Error: AgentError: {e}",
+            latency_seconds=latency_seconds,
         )
+    latency_seconds = time.perf_counter() - start_time
 
     messages = result["messages"]
     turns = sum(1 for msg in messages if isinstance(msg, AIMessage))
     extracted_sql = _extract_final_sql(messages)
+    input_tokens, output_tokens = _sum_token_usage(messages)
 
     output_guardrail_result = run_output_guardrails(db_id, db_dir, extracted_sql)
     notes = output_guardrail_result.reason if not output_guardrail_result.ok else None
 
-    return AgentAnswer(db_id=db_id, question=question, sql=extracted_sql, turns=turns, notes=notes)
+    return AgentAnswer(
+        db_id=db_id,
+        question=question,
+        sql=extracted_sql,
+        turns=turns,
+        notes=notes,
+        latency_seconds=latency_seconds,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+    )
