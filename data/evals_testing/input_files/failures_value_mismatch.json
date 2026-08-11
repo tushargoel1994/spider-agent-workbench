@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "seed": 42,
+    "num_dbs": 7,
+    "questions_per_db": "variable -- see per_db_counts",
+    "per_db_counts": {
+      "coffee_shop": 1,
+      "cre_Theme_park": 1,
+      "flight_company": 2,
+      "manufactory_1": 2,
+      "mountain_photos": 1,
+      "products_for_hire": 1,
+      "theme_gallery": 2
+    },
+    "total_questions": 10,
+    "hardness_breakdown": {
+      "hard": 3,
+      "extra": 7
+    },
+    "split": "train",
+    "source_report": "data\\output_files\\hard_question_report.json",
+    "source_pool": "data\\input_files\\hard_questions_pool.json",
+    "failure_status_filter": "value_mismatch",
+    "generated_at": "2026-08-09T15:56:51.977289+00:00"
+  },
+  "questions": [
+    {
+      "db_id": "flight_company",
+      "question": "How many companies operates airlines in each airport?",
+      "gold_sql": "SELECT T3.id ,  count(*) FROM operate_company AS T1 JOIN flight AS t2 ON T1.id  =  T2.company_id JOIN airport AS T3 ON T2.airport_id  =  T3.id GROUP BY T3.id",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "flight_company",
+      "question": "What is the id, name and IATA code of the airport that had most number of flights?",
+      "gold_sql": "SELECT T1.id ,  T1.name ,  T1.IATA FROM airport AS T1 JOIN flight AS T2 ON T1.id  =  T2.airport_id GROUP BY T2.id ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "Find number of products which Sony does not make.",
+      "gold_sql": "SELECT count(DISTINCT name) FROM products WHERE name NOT IN (SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony')",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "How many products are not made by Sony?",
+      "gold_sql": "SELECT count(DISTINCT name) FROM products WHERE name NOT IN (SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony')",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Return the names of artists and the themes of their exhibitions that had a ticket price higher than average.",
+      "gold_sql": "SELECT T1.theme ,  T2.name FROM exhibition AS T1 JOIN artist AS T2 ON T1.artist_id  =  T2.artist_id WHERE T1.ticket_price  >  (SELECT avg(ticket_price) FROM exhibition)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Count the number of exhibitions that have had an attendnance of over 100 or a ticket prices under 10.",
+      "gold_sql": "SELECT count(*) FROM exhibition_record AS T1 JOIN exhibition AS T2 ON T1.exhibition_id  =  T2.exhibition_id WHERE T1.attendance  >  100 OR T2.ticket_price  <  10",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "mountain_photos",
+      "question": "What are the names of photos taken with the lens brand 'Sigma' or 'Olympus'?",
+      "gold_sql": "SELECT T1.name FROM camera_lens AS T1 JOIN photos AS T2 ON T2.camera_lens_id  =  T1.id WHERE T1.brand  =  'Sigma' OR T1.brand  =  'Olympus'",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "coffee_shop",
+      "question": "Find the ids and names of members who are under age 30 or with black membership card.",
+      "gold_sql": "SELECT name ,  member_id FROM member WHERE Membership_card  =  'Black' OR age  <  30",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "What are the names of the tourist attractions that have parking or shopping as their feature details?",
+      "gold_sql": "SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'park' UNION SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'shopping'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "products_for_hire",
+      "question": "What are the id and the amount of refund of the booking that incurred the most times of payments?",
+      "gold_sql": "SELECT T1.booking_id ,  T1.amount_of_refund FROM Bookings AS T1 JOIN Payments AS T2 ON T1.booking_id  =  T2.booking_id GROUP BY T1.booking_id ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "extra"
+    }
+  ]
+}

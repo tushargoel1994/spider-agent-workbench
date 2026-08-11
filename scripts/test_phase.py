@@ -32,7 +32,7 @@ from spider_agent_workbench.eval.sql_result_scorer import score_query
 logger = logging.getLogger(__name__)
 
 SAMPLE_SEED = 42
-NUM_DBS = 10
+NUM_DBS = 20
 QUESTIONS_PER_DB = 5
 NUM_WORKERS = 2
 

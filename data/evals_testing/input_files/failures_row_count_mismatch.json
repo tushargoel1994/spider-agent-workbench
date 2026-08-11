@@ -1,0 +1,103 @@
+{
+  "meta": {
+    "seed": 42,
+    "num_dbs": 10,
+    "questions_per_db": "variable -- see per_db_counts",
+    "per_db_counts": {
+      "architecture": 1,
+      "cre_Theme_park": 1,
+      "csu_1": 1,
+      "customer_complaints": 1,
+      "formula_1": 1,
+      "machine_repair": 2,
+      "manufactory_1": 1,
+      "party_host": 1,
+      "tracking_grants_for_research": 1,
+      "twitter_1": 2
+    },
+    "total_questions": 12,
+    "hardness_breakdown": {
+      "hard": 6,
+      "extra": 6
+    },
+    "split": "train",
+    "source_report": "data\\output_files\\hard_question_report.json",
+    "source_pool": "data\\input_files\\hard_questions_pool.json",
+    "failure_status_filter": "row_count_mismatch",
+    "generated_at": "2026-08-09T15:56:51.973020+00:00"
+  },
+  "questions": [
+    {
+      "db_id": "machine_repair",
+      "question": "Show names of technicians who are assigned to repair machines with value point more than 70.",
+      "gold_sql": "SELECT T3.Name FROM repair_assignment AS T1 JOIN machine AS T2 ON T1.machine_id  =  T2.machine_id JOIN technician AS T3 ON T1.technician_ID  =  T3.technician_ID WHERE T2.value_points  >  70",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "machine_repair",
+      "question": "What are the names of the technicians that are assigned to repair machines with more point values than 70?",
+      "gold_sql": "SELECT T3.Name FROM repair_assignment AS T1 JOIN machine AS T2 ON T1.machine_id  =  T2.machine_id JOIN technician AS T3 ON T1.technician_ID  =  T3.technician_ID WHERE T2.value_points  >  70",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "csu_1",
+      "question": "report the total number of degrees granted between 1998 and 2002.",
+      "gold_sql": "SELECT T1.campus ,  sum(T2.degrees) FROM campuses AS T1 JOIN degrees AS T2 ON T1.id  =  T2.campus WHERE T2.year  >=  1998 AND T2.year  <=  2002 GROUP BY T1.campus",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "architecture",
+      "question": "show the name of all bridges that was designed by american archtect, and sort the result by the bridge feet length.",
+      "gold_sql": "SELECT t1.name FROM bridge AS t1 JOIN architect AS t2 ON t1.architect_id  =  t2.id WHERE t2.nationality  =  'American' ORDER BY t1.length_feet",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the names of the users whose number of followers is greater than that of the user named \"Tyler Swift\".",
+      "gold_sql": "SELECT T1.name FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  (SELECT count(*) FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 WHERE T1.name  =  'Tyler Swift')",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the id of users who are followed by Mary or Susan.",
+      "gold_sql": "SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  \"Mary\" OR T1.name  =  \"Susan\"",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "What are the names of products produced by both Creative Labs and Sony?",
+      "gold_sql": "SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Creative Labs' INTERSECT SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "What is the response received date for the document described as Regular that was granted more than 100 dollars?",
+      "gold_sql": "SELECT T1.response_received_date FROM Documents AS T1 JOIN Document_Types AS T2 ON T1.document_type_code  =  T2.document_type_code JOIN Grants AS T3 ON T1.grant_id  =  T3.grant_id WHERE T2.document_description  =  'Regular' OR T3.grant_amount  >  100",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "customer_complaints",
+      "question": "What are the emails of customers who have filed complaints on the product which has had the greatest number of complaints?",
+      "gold_sql": "SELECT t1.email_address FROM customers AS t1 JOIN complaints AS t2 ON t1.customer_id  =  t2.customer_id GROUP BY t1.customer_id ORDER BY count(*) LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "party_host",
+      "question": "For each party, find its location and the name of its host. Sort the result in ascending order of the age of the host.",
+      "gold_sql": "SELECT T3.Location ,  T2.Name FROM party_host AS T1 JOIN HOST AS T2 ON T1.Host_ID  =  T2.Host_ID JOIN party AS T3 ON T1.Party_ID  =  T3.Party_ID ORDER BY T2.Age",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "Find the tourist attractions that have parking or shopping as their feature details. What are the names of the attractions?",
+      "gold_sql": "SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'park' UNION SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'shopping'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "formula_1",
+      "question": "What is the average fastest lap speed for races held after 2004, for each race, ordered by year?",
+      "gold_sql": "SELECT avg(T2.fastestlapspeed) ,  T1.name ,  T1.year FROM races AS T1 JOIN results AS T2 ON T1.raceid = T2.raceid WHERE T1.year > 2014 GROUP BY T1.name ORDER BY T1.year",
+      "hardness": "extra"
+    }
+  ]
+}

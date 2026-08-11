@@ -1,0 +1,918 @@
+{
+  "meta": {
+    "seed": 42,
+    "num_dbs": 30,
+    "questions_per_db": 5,
+    "total_questions": 150,
+    "min_hard_fraction": 0.4,
+    "min_extra_fraction": 0.4,
+    "hardness_breakdown": {
+      "hard": 75,
+      "extra": 75
+    },
+    "split": "train",
+    "generated_at": "2026-08-08T17:36:33.622776+00:00"
+  },
+  "questions": [
+    {
+      "db_id": "machine_repair",
+      "question": "Show the starting years shared by technicians from team \"CLE\" and \"CWS\".",
+      "gold_sql": "SELECT Starting_Year FROM technician WHERE Team  =  \"CLE\" INTERSECT SELECT Starting_Year FROM technician WHERE Team  =  \"CWS\"",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "machine_repair",
+      "question": "Show names of technicians who are assigned to repair machines with value point more than 70.",
+      "gold_sql": "SELECT T3.Name FROM repair_assignment AS T1 JOIN machine AS T2 ON T1.machine_id  =  T2.machine_id JOIN technician AS T3 ON T1.technician_ID  =  T3.technician_ID WHERE T2.value_points  >  70",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "machine_repair",
+      "question": "What are the names of the technicians that are assigned to repair machines with more point values than 70?",
+      "gold_sql": "SELECT T3.Name FROM repair_assignment AS T1 JOIN machine AS T2 ON T1.machine_id  =  T2.machine_id JOIN technician AS T3 ON T1.technician_ID  =  T3.technician_ID WHERE T2.value_points  >  70",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "machine_repair",
+      "question": "What are the starting years shared by the technicians from the team \"CLE\" or \"CWS\"?",
+      "gold_sql": "SELECT Starting_Year FROM technician WHERE Team  =  \"CLE\" INTERSECT SELECT Starting_Year FROM technician WHERE Team  =  \"CWS\"",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "machine_repair",
+      "question": "What are the teams with the most technicians?",
+      "gold_sql": "SELECT Team FROM technician GROUP BY Team ORDER BY COUNT(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "music_1",
+      "question": "What are the top 3 artists with the largest number of songs in the language Bangla?",
+      "gold_sql": "SELECT T1.artist_name FROM artist AS T1 JOIN song AS T2 ON T1.artist_name  =  T2.artist_name WHERE T2.languages  =  \"bangla\" GROUP BY T2.artist_name ORDER BY count(*) DESC LIMIT 3",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "music_1",
+      "question": "Find the country of origin for the artist who made the least number of songs?",
+      "gold_sql": "SELECT T1.country FROM artist AS T1 JOIN song AS T2 ON T1.artist_name  =  T2.artist_name GROUP BY T2.artist_name ORDER BY count(*) LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "music_1",
+      "question": "Find the top 3 artists who have the largest number of songs works whose language is Bangla.",
+      "gold_sql": "SELECT T1.artist_name FROM artist AS T1 JOIN song AS T2 ON T1.artist_name  =  T2.artist_name WHERE T2.languages  =  \"bangla\" GROUP BY T2.artist_name ORDER BY count(*) DESC LIMIT 3",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "music_1",
+      "question": "Return the names of songs for which format is mp3 and resolution is below 1000.",
+      "gold_sql": "SELECT T2.song_name FROM files AS T1 JOIN song AS T2 ON T1.f_id  =  T2.f_id WHERE T1.formats  =  \"mp3\" INTERSECT SELECT song_name FROM song WHERE resolution  <  1000",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "music_1",
+      "question": "Find the names and number of works of the three artists who have produced the most songs.",
+      "gold_sql": "SELECT T1.artist_name ,  count(*) FROM artist AS T1 JOIN song AS T2 ON T1.artist_name  =  T2.artist_name GROUP BY T2.artist_name ORDER BY count(*) DESC LIMIT 3",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "candidate_poll",
+      "question": "Return the poll resource associated with the most candidates.",
+      "gold_sql": "SELECT poll_source FROM candidate GROUP BY poll_source ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "candidate_poll",
+      "question": "What is the sex of the candidate who had the highest unsure rate?",
+      "gold_sql": "SELECT t1.sex FROM people AS t1 JOIN candidate AS t2 ON t1.people_id  =  t2.people_id GROUP BY t1.sex ORDER BY avg(t2.unsure_rate) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "candidate_poll",
+      "question": "Which poll resource provided the most number of candidate information?",
+      "gold_sql": "SELECT poll_source FROM candidate GROUP BY poll_source ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "candidate_poll",
+      "question": "which gender got the highest average uncertain ratio.",
+      "gold_sql": "SELECT t1.sex FROM people AS t1 JOIN candidate AS t2 ON t1.people_id  =  t2.people_id GROUP BY t1.sex ORDER BY avg(t2.unsure_rate) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "candidate_poll",
+      "question": "What are the names of people who are shorter than average?",
+      "gold_sql": "SELECT name FROM people WHERE height  <  (SELECT avg(height) FROM people)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "flight_company",
+      "question": "List the name of the pilots who have flied for both a company that mainly provide 'Cargo' services and a company that runs 'Catering services' activities.",
+      "gold_sql": "SELECT T2.pilot FROM operate_company AS T1 JOIN flight AS t2 ON T1.id  =  T2.company_id WHERE T1.principal_activities  =  'Cargo' INTERSECT SELECT T2.pilot FROM operate_company AS T1 JOIN flight AS t2 ON T1.id  =  T2.company_id WHERE T1.principal_activities  =  'Catering services'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "flight_company",
+      "question": "which pilot is in charge of the most number of flights?",
+      "gold_sql": "SELECT pilot FROM flight GROUP BY pilot ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "flight_company",
+      "question": "How many airports haven't the pilot 'Thompson' driven an aircraft?",
+      "gold_sql": "SELECT count(*) FROM airport WHERE id NOT IN ( SELECT airport_id FROM flight WHERE pilot  =  'Thompson' );",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "flight_company",
+      "question": "How many companies operates airlines in each airport?",
+      "gold_sql": "SELECT T3.id ,  count(*) FROM operate_company AS T1 JOIN flight AS t2 ON T1.id  =  T2.company_id JOIN airport AS T3 ON T2.airport_id  =  T3.id GROUP BY T3.id",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "flight_company",
+      "question": "What is the id, name and IATA code of the airport that had most number of flights?",
+      "gold_sql": "SELECT T1.id ,  T1.name ,  T1.IATA FROM airport AS T1 JOIN flight AS T2 ON T1.id  =  T2.airport_id GROUP BY T2.id ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "csu_1",
+      "question": "report the total number of degrees granted between 1998 and 2002.",
+      "gold_sql": "SELECT T1.campus ,  sum(T2.degrees) FROM campuses AS T1 JOIN degrees AS T2 ON T1.id  =  T2.campus WHERE T2.year  >=  1998 AND T2.year  <=  2002 GROUP BY T1.campus",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "csu_1",
+      "question": "Which campus has the most faculties in year 2003?",
+      "gold_sql": "SELECT T1.campus FROM campuses AS T1 JOIN faculty AS T2 ON T1.id  =  T2.campus WHERE T2.year  =  2003 ORDER BY T2.faculty DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "csu_1",
+      "question": "Find the count of universities whose campus fee is greater than the average campus fee.",
+      "gold_sql": "SELECT count(*) FROM csu_fees WHERE campusfee  >  (SELECT avg(campusfee) FROM csu_fees)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "csu_1",
+      "question": "How many faculty members did the university that conferred the most degrees in 2002 have?",
+      "gold_sql": "SELECT T2.faculty FROM campuses AS T1 JOIN faculty AS T2 ON T1.id  =  t2.campus JOIN degrees AS T3 ON T1.id  =  t3.campus AND t2.year  =  t3.year WHERE t2.year  =  2002 ORDER BY t3.degrees DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "csu_1",
+      "question": "How many universities have a campus fee higher than average?",
+      "gold_sql": "SELECT count(*) FROM csu_fees WHERE campusfee  >  (SELECT avg(campusfee) FROM csu_fees)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "architecture",
+      "question": "What is the id, name and nationality of the architect who built most mills?",
+      "gold_sql": "SELECT T1.id ,  T1.name ,  T1.nationality FROM architect AS T1 JOIN mill AS T2 ON T1.id  =  T2.architect_id GROUP BY T1.id ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "architecture",
+      "question": "What is the most common mill type, and how many are there?",
+      "gold_sql": "SELECT TYPE ,  count(*) FROM mill GROUP BY TYPE ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "architecture",
+      "question": "What are the ids, names and genders of the architects who built two bridges or one mill?",
+      "gold_sql": "SELECT T1.id ,  T1.name ,  T1.gender FROM architect AS T1 JOIN bridge AS T2 ON T1.id  =  T2.architect_id GROUP BY T1.id HAVING count(*)  =  2 UNION SELECT T1.id ,  T1.name ,  T1.gender FROM architect AS T1 JOIN mill AS T2 ON T1.id  =  T2.architect_id GROUP BY T1.id HAVING count(*)  =  1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "architecture",
+      "question": "show the name of all bridges that was designed by american archtect, and sort the result by the bridge feet length.",
+      "gold_sql": "SELECT t1.name FROM bridge AS t1 JOIN architect AS t2 ON t1.architect_id  =  t2.id WHERE t2.nationality  =  'American' ORDER BY t1.length_feet",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "architecture",
+      "question": "How many architects haven't built a mill before year 1850?",
+      "gold_sql": "SELECT count(*) FROM architect WHERE id NOT IN ( SELECT architect_id FROM mill WHERE built_year  <  1850 );",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "apartment_rentals",
+      "question": "What are the top three apartment types in terms of the average room count? Give me the",
+      "gold_sql": "SELECT apt_type_code FROM Apartments GROUP BY apt_type_code ORDER BY avg(room_count) DESC LIMIT 3",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "apartment_rentals",
+      "question": "Find the number of apartments that have no facility.",
+      "gold_sql": "SELECT count(*) FROM Apartments WHERE apt_id NOT IN (SELECT apt_id FROM Apartment_Facilities)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "apartment_rentals",
+      "question": "Show the most common apartment type code.",
+      "gold_sql": "SELECT apt_type_code FROM Apartments GROUP BY apt_type_code ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "apartment_rentals",
+      "question": "Show the apartment type codes and the corresponding number of apartments sorted by the number of apartments in ascending order.",
+      "gold_sql": "SELECT apt_type_code ,  COUNT(*) FROM Apartments GROUP BY apt_type_code ORDER BY COUNT(*) ASC",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "apartment_rentals",
+      "question": "Show the top 3 apartment type codes sorted by the average number of rooms in descending order.",
+      "gold_sql": "SELECT apt_type_code FROM Apartments GROUP BY apt_type_code ORDER BY avg(room_count) DESC LIMIT 3",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cre_Doc_Tracking_DB",
+      "question": "What are the name and code of the location with the smallest number of documents?",
+      "gold_sql": "SELECT T2.location_name ,  T1.location_code FROM Document_locations AS T1 JOIN Ref_locations AS T2 ON T1.location_code  =  T2.location_code GROUP BY T1.location_code ORDER BY count(*) ASC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cre_Doc_Tracking_DB",
+      "question": "Show the role code with the least employees.",
+      "gold_sql": "SELECT role_code FROM Employees GROUP BY role_code ORDER BY count(*) ASC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cre_Doc_Tracking_DB",
+      "question": "Show the location name and code with the least documents.",
+      "gold_sql": "SELECT T2.location_name ,  T1.location_code FROM Document_locations AS T1 JOIN Ref_locations AS T2 ON T1.location_code  =  T2.location_code GROUP BY T1.location_code ORDER BY count(*) ASC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cre_Doc_Tracking_DB",
+      "question": "Show the ids of all employees who don't destroy any document.",
+      "gold_sql": "SELECT employee_id FROM Employees EXCEPT SELECT Destroyed_by_Employee_ID FROM Documents_to_be_destroyed",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cre_Doc_Tracking_DB",
+      "question": "What is the location code with the most documents?",
+      "gold_sql": "SELECT location_code FROM Document_locations GROUP BY location_code ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "pilot_record",
+      "question": "Show the fleet series of the aircrafts flied by pilots younger than 34",
+      "gold_sql": "SELECT T2.Fleet_Series FROM pilot_record AS T1 JOIN aircraft AS T2 ON T1.Aircraft_ID  =  T2.Aircraft_ID JOIN pilot AS T3 ON T1.Pilot_ID  =  T3.Pilot_ID WHERE T3.Age  <  34",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "pilot_record",
+      "question": "Show the names of pilots and fleet series of the aircrafts they have flied with in ascending order of the rank of the pilot.",
+      "gold_sql": "SELECT T3.Pilot_name ,  T2.Fleet_Series FROM pilot_record AS T1 JOIN aircraft AS T2 ON T1.Aircraft_ID  =  T2.Aircraft_ID JOIN pilot AS T3 ON T1.Pilot_ID  =  T3.Pilot_ID ORDER BY T3.Rank",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "pilot_record",
+      "question": "Show the pilot positions that have both pilots joining after year 2005 and pilots joining before 2000.",
+      "gold_sql": "SELECT POSITION FROM pilot WHERE Join_Year\t <  2000 INTERSECT SELECT POSITION FROM pilot WHERE Join_Year\t >  2005",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "pilot_record",
+      "question": "List the names of pilots that do not have any record.",
+      "gold_sql": "SELECT Pilot_name FROM pilot WHERE Pilot_ID NOT IN (SELECT Pilot_ID FROM pilot_record)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "pilot_record",
+      "question": "Show the most common nationality of pilots.",
+      "gold_sql": "SELECT Nationality FROM pilot GROUP BY Nationality ORDER BY COUNT(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the names of the users whose number of followers is greater than that of the user named \"Tyler Swift\".",
+      "gold_sql": "SELECT T1.name FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  (SELECT count(*) FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 WHERE T1.name  =  'Tyler Swift')",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the names of users whose emails contain \u2018superstar\u2019 or \u2018edu\u2019.",
+      "gold_sql": "SELECT name FROM user_profiles WHERE email LIKE '%superstar%' OR email LIKE '%edu%'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the id of users who are followed by Mary and Susan.",
+      "gold_sql": "SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  \"Mary\" INTERSECT SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  \"Susan\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the average number of followers for the users who do not have any tweet.",
+      "gold_sql": "SELECT avg(followers) FROM user_profiles WHERE UID NOT IN (SELECT UID FROM tweets)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the id of users who are followed by Mary or Susan.",
+      "gold_sql": "SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  \"Mary\" OR T1.name  =  \"Susan\"",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "local_govt_in_alabama",
+      "question": "How many events did not have any participants?",
+      "gold_sql": "SELECT count(*) FROM EVENTS WHERE event_id NOT IN (SELECT event_id FROM Participants_in_Events)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "local_govt_in_alabama",
+      "question": "Which service id and type has the least number of participants?",
+      "gold_sql": "SELECT T3.service_id ,  T4.Service_Type_Code FROM participants AS T1 JOIN Participants_in_Events AS T2 ON T1.Participant_ID  =  T2.Participant_ID JOIN EVENTS AS T3 ON T2.Event_ID   =  T3.Event_ID JOIN services AS T4 ON T3.service_id  =  T4.service_id GROUP BY T3.service_id ORDER BY count(*) ASC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "local_govt_in_alabama",
+      "question": "Which services type had both successful and failure event details?",
+      "gold_sql": "SELECT T1.service_type_code FROM services AS T1 JOIN EVENTS AS T2 ON T1.service_id  =  T2.service_id WHERE T2.event_details  =  'Success' INTERSECT SELECT T1.service_type_code FROM services AS T1 JOIN EVENTS AS T2 ON T1.service_id  =  T2.service_id WHERE T2.event_details  =  'Fail'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "local_govt_in_alabama",
+      "question": "What is the id of the event with the most participants?",
+      "gold_sql": "SELECT Event_ID FROM Participants_in_Events GROUP BY Event_ID ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "local_govt_in_alabama",
+      "question": "How many events had participants whose details had the substring 'Dr.'",
+      "gold_sql": "SELECT count(*) FROM participants AS T1 JOIN Participants_in_Events AS T2 ON T1.Participant_ID  =  T2.Participant_ID WHERE T1.participant_details LIKE '%Dr.%'",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "Find number of products which Sony does not make.",
+      "gold_sql": "SELECT count(DISTINCT name) FROM products WHERE name NOT IN (SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony')",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "Find the name of product that is produced by both companies Creative Labs and Sony.",
+      "gold_sql": "SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Creative Labs' INTERSECT SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "How many products are not made by Sony?",
+      "gold_sql": "SELECT count(DISTINCT name) FROM products WHERE name NOT IN (SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony')",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "Find the name of companies whose revenue is greater than the average revenue of all companies.",
+      "gold_sql": "SELECT name FROM manufacturers WHERE revenue  >  (SELECT avg(revenue) FROM manufacturers)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "What are the names of products produced by both Creative Labs and Sony?",
+      "gold_sql": "SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Creative Labs' INTERSECT SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "How many documents can one grant have at most? List the grant id and number.",
+      "gold_sql": "SELECT grant_id ,  count(*) FROM Documents GROUP BY grant_id ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "What are the send dates for all documents that have a grant amount of more than 5000 and are involved in research?",
+      "gold_sql": "SELECT T1.sent_date FROM documents AS T1 JOIN Grants AS T2 ON T1.grant_id  =  T2.grant_id JOIN Organisations AS T3 ON T2.organisation_id  =  T3.organisation_id JOIN organisation_Types AS T4 ON T3.organisation_type  =  T4.organisation_type WHERE T2.grant_amount  >  5000 AND T4.organisation_type_description  =  'Research'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "What are the details for the projects which were launched by the organization with the most projects?",
+      "gold_sql": "SELECT project_details FROM Projects WHERE organisation_id IN ( SELECT organisation_id FROM Projects GROUP BY organisation_id ORDER BY count(*) DESC LIMIT 1 )",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "What is the response received date for the document described as Regular that was granted more than 100 dollars?",
+      "gold_sql": "SELECT T1.response_received_date FROM Documents AS T1 JOIN Document_Types AS T2 ON T1.document_type_code  =  T2.document_type_code JOIN Grants AS T3 ON T1.grant_id  =  T3.grant_id WHERE T2.document_description  =  'Regular' OR T3.grant_amount  >  100",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "Which projects have no outcome? List the project details.",
+      "gold_sql": "SELECT project_details FROM Projects WHERE project_id NOT IN ( SELECT project_id FROM Project_outcomes )",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Return the names of artists and the themes of their exhibitions that had a ticket price higher than average.",
+      "gold_sql": "SELECT T1.theme ,  T2.name FROM exhibition AS T1 JOIN artist AS T2 ON T1.artist_id  =  T2.artist_id WHERE T1.ticket_price  >  (SELECT avg(ticket_price) FROM exhibition)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Show names for artists without any exhibition.",
+      "gold_sql": "SELECT name FROM artist WHERE artist_id NOT IN (SELECT artist_id FROM exhibition)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Which themes have had corresponding exhibitions that have had attendance both below 100 and above 500?",
+      "gold_sql": "SELECT T2.theme FROM exhibition_record AS T1 JOIN exhibition AS T2 ON T1.exhibition_id  =  T2.exhibition_id WHERE T1.attendance  <  100 INTERSECT SELECT T2.theme FROM exhibition_record AS T1 JOIN exhibition AS T2 ON T1.exhibition_id  =  T2.exhibition_id WHERE T1.attendance  >  500",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Count the number of exhibitions that have had an attendnance of over 100 or a ticket prices under 10.",
+      "gold_sql": "SELECT count(*) FROM exhibition_record AS T1 JOIN exhibition AS T2 ON T1.exhibition_id  =  T2.exhibition_id WHERE T1.attendance  >  100 OR T2.ticket_price  <  10",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Show the theme for exhibitions with both records of an attendance below 100 and above 500.",
+      "gold_sql": "SELECT T2.theme FROM exhibition_record AS T1 JOIN exhibition AS T2 ON T1.exhibition_id  =  T2.exhibition_id WHERE T1.attendance  <  100 INTERSECT SELECT T2.theme FROM exhibition_record AS T1 JOIN exhibition AS T2 ON T1.exhibition_id  =  T2.exhibition_id WHERE T1.attendance  >  500",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "List three countries which are the origins of the least players.",
+      "gold_sql": "SELECT birth_country FROM player GROUP BY birth_country ORDER BY count(*) ASC LIMIT 3;",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "In 2014, what are the id and rank of the team that has the largest average number of attendance?",
+      "gold_sql": "SELECT T2.team_id ,  T2.rank FROM home_game AS T1 JOIN team AS T2 ON T1.team_id  =  T2.team_id WHERE T1.year  =  2014 GROUP BY T1.team_id ORDER BY avg(T1.attendance) DESC LIMIT 1;",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "What is the average height of the players from the college named 'Yale University'?",
+      "gold_sql": "SELECT avg(T1.height) FROM player AS T1 JOIN player_college AS T2 ON T1.player_id  =  T2.player_id JOIN college AS T3 ON T3.college_id  =  T2.college_id WHERE T3.name_full  =  'Yale University';",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "What are the manager's first name, last name and id who won the most manager award?",
+      "gold_sql": "SELECT T1.name_first ,  T1.name_last ,  T2.player_id FROM player AS T1 JOIN manager_award AS T2 ON T1.player_id  =  T2.player_id GROUP BY T2.player_id ORDER BY count(*) DESC LIMIT 1;",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "List the 3 highest salaries of the players in 2001?",
+      "gold_sql": "SELECT salary FROM salary WHERE YEAR  =  2001 ORDER BY salary DESC LIMIT 3;",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "customer_complaints",
+      "question": "Which products has been complained by the customer who has filed least amount of complaints?",
+      "gold_sql": "SELECT DISTINCT t1.product_name FROM products AS t1 JOIN complaints AS t2 ON t1.product_id  =  t2.product_id JOIN customers AS t3 GROUP BY t3.customer_id ORDER BY count(*) LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "customer_complaints",
+      "question": "Which state has the most customers?",
+      "gold_sql": "SELECT state FROM customers GROUP BY state ORDER BY count(*) LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "customer_complaints",
+      "question": "What are the emails of customers who have filed complaints on the product which has had the greatest number of complaints?",
+      "gold_sql": "SELECT t1.email_address FROM customers AS t1 JOIN complaints AS t2 ON t1.customer_id  =  t2.customer_id GROUP BY t1.customer_id ORDER BY count(*) LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "customer_complaints",
+      "question": "What are the phone numbers of all customers and all staff members?",
+      "gold_sql": "SELECT phone_number FROM customers UNION SELECT phone_number FROM staff",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "customer_complaints",
+      "question": "Return the names of products that have had complaints filed by the customer who has filed the fewest complaints.",
+      "gold_sql": "SELECT DISTINCT t1.product_name FROM products AS t1 JOIN complaints AS t2 ON t1.product_id  =  t2.product_id JOIN customers AS t3 GROUP BY t3.customer_id ORDER BY count(*) LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "insurance_fnol",
+      "question": "Which policy type has the most records in the database?",
+      "gold_sql": "SELECT policy_type_code FROM available_policies GROUP BY policy_type_code ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "insurance_fnol",
+      "question": "Find the claim that has the largest total settlement amount. Return the effective date of the claim.",
+      "gold_sql": "SELECT t1.Effective_Date FROM claims AS t1 JOIN settlements AS t2 ON t1.claim_id  =  t2.claim_id GROUP BY t1.claim_id ORDER BY sum(t2.settlement_amount) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "insurance_fnol",
+      "question": "Which customers do not have a first notification of loss record? Give me the customer names.",
+      "gold_sql": "SELECT customer_name FROM customers EXCEPT SELECT t1.customer_name FROM customers AS t1 JOIN first_notification_of_loss AS t2 ON t1.customer_id  =  t2.customer_id",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "insurance_fnol",
+      "question": "Which customer uses the most policies? Give me the customer name.",
+      "gold_sql": "SELECT t1.customer_name FROM customers AS t1 JOIN customers_policies AS t2 ON t1.customer_id  =  t2.customer_id GROUP BY t1.customer_name ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "insurance_fnol",
+      "question": "Which policy type appears most frequently in the available policies?",
+      "gold_sql": "SELECT policy_type_code FROM available_policies GROUP BY policy_type_code ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "protein_institute",
+      "question": "Show the number of buildings with a height above the average or a number of floors above the average.",
+      "gold_sql": "SELECT count(*) FROM building WHERE height_feet  >  (SELECT avg(height_feet) FROM building) OR floors  >  (SELECT avg(floors) FROM building)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "protein_institute",
+      "question": "How many proteins are associated with an institution in a building with at least 20 floors?",
+      "gold_sql": "SELECT count(*) FROM institution AS T1 JOIN protein AS T2 ON T1.institution_id  =  T2.institution_id JOIN building AS T3 ON T3.building_id  =  T1.building_id WHERE T3.floors  >=  20",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "protein_institute",
+      "question": "How many institutions do not have an associated protein in our record?",
+      "gold_sql": "SELECT count(*) FROM institution WHERE institution_id NOT IN (SELECT institution_id FROM protein)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "protein_institute",
+      "question": "How many proteins are associated with an institution founded after 1880 or an institution with type \"Private\"?",
+      "gold_sql": "SELECT count(*) FROM institution AS T1 JOIN protein AS T2 ON T1.institution_id  =  T2.institution_id WHERE T1.founded  >  1880 OR T1.type  =  'Private'",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "protein_institute",
+      "question": "Show the names of buildings except for those having an institution founded in 2003.",
+      "gold_sql": "SELECT name FROM building EXCEPT SELECT T1.name FROM building AS T1 JOIN institution AS T2 ON T1.building_id  =  T2.building_id WHERE T2.founded  =  2003",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "wrestler",
+      "question": "List the names of wrestlers that have not been eliminated.",
+      "gold_sql": "SELECT Name FROM wrestler WHERE Wrestler_ID NOT IN (SELECT Wrestler_ID FROM elimination)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "wrestler",
+      "question": "List the time of elimination of the wrestlers with largest days held.",
+      "gold_sql": "SELECT T1.Time FROM elimination AS T1 JOIN wrestler AS T2 ON T1.Wrestler_ID  =  T2.Wrestler_ID ORDER BY T2.Days_held DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "wrestler",
+      "question": "Show the teams that have both wrestlers eliminated by \"Orton\" and wrestlers eliminated by \"Benjamin\".",
+      "gold_sql": "SELECT Team FROM Elimination WHERE Eliminated_By  =  \"Orton\" INTERSECT SELECT Team FROM Elimination WHERE Eliminated_By  =  \"Benjamin\"",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "wrestler",
+      "question": "What are the teams that have both wrestlers eliminated by Orton and wrestlers eliminated by Benjamin?",
+      "gold_sql": "SELECT Team FROM Elimination WHERE Eliminated_By  =  \"Orton\" INTERSECT SELECT Team FROM Elimination WHERE Eliminated_By  =  \"Benjamin\"",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "wrestler",
+      "question": "What is the time of elimination for the wrestler with the most days held?",
+      "gold_sql": "SELECT T1.Time FROM elimination AS T1 JOIN wrestler AS T2 ON T1.Wrestler_ID  =  T2.Wrestler_ID ORDER BY T2.Days_held DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "party_host",
+      "question": "What are the first year and last year of the parties whose theme is \"Spring\" or \"Teqnology\"?",
+      "gold_sql": "SELECT First_year ,  Last_year FROM party WHERE Party_Theme  =  \"Spring\" OR Party_Theme  =  \"Teqnology\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "party_host",
+      "question": "Show the first year and last year of parties with theme \"Spring\" or \"Teqnology\".",
+      "gold_sql": "SELECT First_year ,  Last_year FROM party WHERE Party_Theme  =  \"Spring\" OR Party_Theme  =  \"Teqnology\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "party_host",
+      "question": "Which parties have more than 20 hosts? Give me the host names for these parties.",
+      "gold_sql": "SELECT T2.Name FROM party_host AS T1 JOIN HOST AS T2 ON T1.Host_ID  =  T2.Host_ID JOIN party AS T3 ON T1.Party_ID  =  T3.Party_ID WHERE T3.Number_of_hosts  >  20",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "party_host",
+      "question": "Which nations have both hosts of age above 45 and hosts of age below 35?",
+      "gold_sql": "SELECT Nationality FROM HOST WHERE Age  >  45 INTERSECT SELECT Nationality FROM HOST WHERE Age  <  35",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "party_host",
+      "question": "For each party, find its location and the name of its host. Sort the result in ascending order of the age of the host.",
+      "gold_sql": "SELECT T3.Location ,  T2.Name FROM party_host AS T1 JOIN HOST AS T2 ON T1.Host_ID  =  T2.Host_ID JOIN party AS T3 ON T1.Party_ID  =  T3.Party_ID ORDER BY T2.Age",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "student_1",
+      "question": "Find all students taught by OTHA MOYER. Output the first and last names of the students.",
+      "gold_sql": "SELECT T1.firstname ,  T1.lastname FROM list AS T1 JOIN teachers AS T2 ON T1.classroom  =  T2.classroom WHERE T2.firstname  =  \"OTHA\" AND T2.lastname  =  \"MOYER\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "student_1",
+      "question": "Which teachers teach the student named EVELINA BROMLEY? Give me the first and last name  of the teachers.",
+      "gold_sql": "SELECT T2.firstname ,  T2.lastname FROM list AS T1 JOIN teachers AS T2 ON T1.classroom  =  T2.classroom WHERE T1.firstname  =  \"EVELINA\" AND T1.lastname  =  \"BROMLEY\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "student_1",
+      "question": "Find all students taught by MARROTTE KIRK. Output first and last names of students.",
+      "gold_sql": "SELECT T1.firstname ,  T1.lastname FROM list AS T1 JOIN teachers AS T2 ON T1.classroom  =  T2.classroom WHERE T2.firstname  =  \"MARROTTE\" AND T2.lastname  =  \"KIRK\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "student_1",
+      "question": "Find the name of the teacher who teaches the largest number of students.",
+      "gold_sql": "SELECT T2.firstname ,  T2.lastname FROM list AS T1 JOIN teachers AS T2 ON T1.classroom  =  T2.classroom GROUP BY T2.firstname ,  T2.lastname ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "student_1",
+      "question": "What are the first and last names of the first-grade students who are NOT taught by teacher OTHA MOYER?",
+      "gold_sql": "SELECT DISTINCT T1.firstname ,  T1.lastname FROM list AS T1 JOIN teachers AS T2 ON T1.classroom  =  T2.classroom WHERE T1.grade  =  1 EXCEPT SELECT T1.firstname ,  T1.lastname FROM list AS T1 JOIN teachers AS T2 ON T1.classroom  =  T2.classroom WHERE T2.firstname  =  \"OTHA\" AND T2.lastname  =  \"MOYER\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "mountain_photos",
+      "question": "What are the names of the cameras that have taken picture of the most mountains?",
+      "gold_sql": "SELECT T2.name FROM photos AS T1 JOIN camera_lens AS T2 ON T1.camera_lens_id  =  T2.id GROUP BY T2.id ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "mountain_photos",
+      "question": "Show the name and prominence of the mountains whose picture is not taken by a lens of brand 'Sigma'.",
+      "gold_sql": "SELECT name ,  prominence FROM mountain EXCEPT SELECT T1.name ,  T1.prominence FROM mountain AS T1 JOIN photos AS T2 ON T1.id  =  T2.mountain_id JOIN camera_lens AS T3 ON T2.camera_lens_id  =  T3.id WHERE T3.brand  =  'Sigma'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "mountain_photos",
+      "question": "List the brands of lenses that took both a picture of mountains with range 'Toubkal Atlas' and a picture of mountains with range 'Lasta Massif'",
+      "gold_sql": "SELECT T3.brand FROM mountain AS T1 JOIN photos AS T2 ON T1.id  =  T2.mountain_id JOIN camera_lens AS T3 ON T2.camera_lens_id  =  T3.id WHERE T1.range  =  'Toubkal Atlas' INTERSECT SELECT T3.brand FROM mountain AS T1 JOIN photos AS T2 ON T1.id  =  T2.mountain_id JOIN camera_lens AS T3 ON T2.camera_lens_id  =  T3.id WHERE T1.range  =  'Lasta Massif'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "mountain_photos",
+      "question": "What are the names of photos taken with the lens brand 'Sigma' or 'Olympus'?",
+      "gold_sql": "SELECT T1.name FROM camera_lens AS T1 JOIN photos AS T2 ON T2.camera_lens_id  =  T1.id WHERE T1.brand  =  'Sigma' OR T1.brand  =  'Olympus'",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "mountain_photos",
+      "question": "How many camera lenses are not used in taking any photos?",
+      "gold_sql": "SELECT count(*) FROM camera_lens WHERE id NOT IN ( SELECT camera_lens_id FROM photos )",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "storm_record",
+      "question": "Show all storm names affecting region \"Denmark\".",
+      "gold_sql": "SELECT T3.name FROM affected_region AS T1 JOIN region AS T2 ON T1.region_id  =  T2.region_id JOIN storm AS T3 ON T1.storm_id  =  T3.storm_id WHERE T2.region_name  =  'Denmark'",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "storm_record",
+      "question": "Show storm name with at least two regions and 10 cities affected.",
+      "gold_sql": "SELECT T1.name FROM storm AS T1 JOIN affected_region AS T2 ON T1.storm_id  =  T2.storm_id GROUP BY T1.storm_id HAVING count(*)  >=  2 INTERSECT SELECT T1.name FROM storm AS T1 JOIN affected_region AS T2 ON T1.storm_id  =  T2.storm_id GROUP BY T1.storm_id HAVING sum(T2.number_city_affected)  >=  10",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "storm_record",
+      "question": "Show the name for regions not affected.",
+      "gold_sql": "SELECT region_name FROM region WHERE region_id NOT IN (SELECT region_id FROM affected_region)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "storm_record",
+      "question": "What are the names of storms that both affected two or more regions and affected a total of 10 or more cities?",
+      "gold_sql": "SELECT T1.name FROM storm AS T1 JOIN affected_region AS T2 ON T1.storm_id  =  T2.storm_id GROUP BY T1.storm_id HAVING count(*)  >=  2 INTERSECT SELECT T1.name FROM storm AS T1 JOIN affected_region AS T2 ON T1.storm_id  =  T2.storm_id GROUP BY T1.storm_id HAVING sum(T2.number_city_affected)  >=  10",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "storm_record",
+      "question": "What are the names of storms that did not affect two or more regions?",
+      "gold_sql": "SELECT name FROM storm EXCEPT SELECT T1.name FROM storm AS T1 JOIN affected_region AS T2 ON T1.storm_id  =  T2.storm_id GROUP BY T1.storm_id HAVING count(*)  >=  2",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "coffee_shop",
+      "question": "Find the ids and names of members who are under age 30 or with black membership card.",
+      "gold_sql": "SELECT name ,  member_id FROM member WHERE Membership_card  =  'Black' OR age  <  30",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "coffee_shop",
+      "question": "Which month has the most happy hours?",
+      "gold_sql": "SELECT MONTH FROM happy_hour GROUP BY MONTH ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "coffee_shop",
+      "question": "Find the id and address of the shops whose score is below the average score.",
+      "gold_sql": "SELECT shop_id ,  address FROM shop WHERE score  <  (SELECT avg(score) FROM shop)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "coffee_shop",
+      "question": "What is the membership card held by both members living in Hartford and ones living in Waterbury address?",
+      "gold_sql": "SELECT membership_card FROM member WHERE address  =  'Hartford' INTERSECT SELECT membership_card FROM member WHERE address  =  'Waterbury'",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "coffee_shop",
+      "question": "Find the address and staff number of the shops that do not have any happy hour.",
+      "gold_sql": "SELECT address ,  num_of_staff FROM shop WHERE shop_id NOT IN (SELECT shop_id FROM happy_hour)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "What are the names of the tourist attractions that have parking or shopping as their feature details?",
+      "gold_sql": "SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'park' UNION SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'shopping'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "What are the names and opening hours of the tourist attractions that can be accessed by bus or walk?",
+      "gold_sql": "SELECT Name ,  Opening_Hours FROM TOURIST_ATTRACTIONS WHERE How_to_Get_There  =  \"bus\" OR How_to_Get_There  =  \"walk\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "Find the tourist attractions that have parking or shopping as their feature details. What are the names of the attractions?",
+      "gold_sql": "SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'park' UNION SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'shopping'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "For each tourist attraction, return its name and the date when the tourists named Vincent or Vivian visited there.",
+      "gold_sql": "SELECT T1.Name ,  T3.Visit_Date FROM Tourist_Attractions AS T1 JOIN VISITORS AS T2 JOIN VISITS AS T3 ON T1.Tourist_Attraction_ID  =  T3.Tourist_Attraction_ID AND T2.Tourist_ID  =  T3.Tourist_ID WHERE T2.Tourist_Details  =  \"Vincent\" OR T2.Tourist_Details  =  \"Vivian\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "What are the details of the markets that can be accessed by walk or bus?",
+      "gold_sql": "SELECT T1.Market_Details FROM Street_Markets AS T1 JOIN TOURIST_ATTRACTIONS AS T2 ON T1.Market_ID  =  T2.Tourist_Attraction_ID WHERE T2.How_to_Get_There  =  \"walk\" OR  T2.How_to_Get_There  =  \"bus\"",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "products_for_hire",
+      "question": "How many products are never booked with amount higher than 200?",
+      "gold_sql": "SELECT count(*) FROM Products_for_hire WHERE product_id NOT IN ( SELECT product_id FROM products_booked WHERE booked_amount  >  200 )",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "products_for_hire",
+      "question": "What are the start date and end date of the booking that has booked the product named 'Book collection A'?",
+      "gold_sql": "SELECT T3.booking_start_date ,   T3.booking_end_date FROM Products_for_hire AS T1 JOIN products_booked AS T2 ON T1.product_id  =  T2.product_id JOIN bookings AS T3 ON T2.booking_id  =  T3.booking_id WHERE T1.product_name  =  'Book collection A'",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "products_for_hire",
+      "question": "What are the coupon amount of the coupons owned by both good and bad customers?",
+      "gold_sql": "SELECT T1.coupon_amount FROM Discount_Coupons AS T1 JOIN customers AS T2 ON T1.coupon_id  =  T2.coupon_id WHERE T2.good_or_bad_customer  =  'good' INTERSECT SELECT T1.coupon_amount FROM Discount_Coupons AS T1 JOIN customers AS T2 ON T1.coupon_id  =  T2.coupon_id WHERE T2.good_or_bad_customer  =  'bad'",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "products_for_hire",
+      "question": "What is the maximum total amount paid by a customer? List the customer id and amount.",
+      "gold_sql": "SELECT customer_id ,  sum(amount_paid) FROM Payments GROUP BY customer_id ORDER BY sum(amount_paid) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "products_for_hire",
+      "question": "What are the id and the amount of refund of the booking that incurred the most times of payments?",
+      "gold_sql": "SELECT T1.booking_id ,  T1.amount_of_refund FROM Bookings AS T1 JOIN Payments AS T2 ON T1.booking_id  =  T2.booking_id GROUP BY T1.booking_id ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "perpetrator",
+      "question": "What is the name of the perpetrator with the biggest weight.",
+      "gold_sql": "SELECT T1.Name FROM people AS T1 JOIN perpetrator AS T2 ON T1.People_ID  =  T2.People_ID ORDER BY T1.Weight DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "perpetrator",
+      "question": "What is the country that has the most perpetrators?",
+      "gold_sql": "SELECT Country ,  COUNT(*) FROM perpetrator GROUP BY Country ORDER BY COUNT(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "perpetrator",
+      "question": "Show the countries that have both perpetrators with injures more than 50 and perpetrators with injures smaller than 20.",
+      "gold_sql": "SELECT Country FROM perpetrator WHERE Injured  >  50 INTERSECT SELECT Country FROM perpetrator WHERE Injured  <  20",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "perpetrator",
+      "question": "List the names of people that are not perpetrators.",
+      "gold_sql": "SELECT Name FROM people WHERE People_ID NOT IN (SELECT People_ID FROM perpetrator)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "perpetrator",
+      "question": "What are the names of perpetrators in country \"China\" or \"Japan\"?",
+      "gold_sql": "SELECT T1.Name FROM people AS T1 JOIN perpetrator AS T2 ON T1.People_ID  =  T2.People_ID WHERE T2.Country  =  \"China\" OR T2.Country  =  \"Japan\"",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cre_Drama_Workshop_Groups",
+      "question": "What is the most frequent status of bookings?",
+      "gold_sql": "SELECT Status_Code FROM BOOKINGS GROUP BY Status_Code ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cre_Drama_Workshop_Groups",
+      "question": "Show all the distinct product names with price higher than the average.",
+      "gold_sql": "SELECT DISTINCT Product_Name FROM PRODUCTS WHERE Product_Price  >  (SELECT avg(Product_Price) FROM PRODUCTS)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cre_Drama_Workshop_Groups",
+      "question": "What are the distinct names of the products that cost more than the average?",
+      "gold_sql": "SELECT DISTINCT Product_Name FROM PRODUCTS WHERE Product_Price  >  (SELECT avg(Product_Price) FROM PRODUCTS)",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cre_Drama_Workshop_Groups",
+      "question": "What are the order dates of orders with price higher than 1000?",
+      "gold_sql": "SELECT T1.Order_Date FROM Customer_Orders AS T1 JOIN ORDER_ITEMS AS T2 ON T1.Order_ID  =  T2.Order_ID JOIN Products AS T3 ON T2.Product_ID  =  T3.Product_ID WHERE T3.Product_price  >  1000",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cre_Drama_Workshop_Groups",
+      "question": "What is the payment method code used by the most orders?",
+      "gold_sql": "SELECT payment_method_code FROM INVOICES GROUP BY payment_method_code ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "formula_1",
+      "question": "What is the average fastest lap speed for races held after 2004, for each race, ordered by year?",
+      "gold_sql": "SELECT avg(T2.fastestlapspeed) ,  T1.name ,  T1.year FROM races AS T1 JOIN results AS T2 ON T1.raceid = T2.raceid WHERE T1.year > 2014 GROUP BY T1.name ORDER BY T1.year",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "formula_1",
+      "question": "What is the id and first name of all the drivers who participated in the Australian Grand Prix and the Chinese Grand Prix?",
+      "gold_sql": "SELECT T2.driverid ,  T3.forename FROM races AS T1 JOIN results AS T2 ON T1.raceid = T2.raceid JOIN drivers AS T3 ON T2.driverid  =  T3.driverid WHERE T1.name = \"Australian Grand Prix\" INTERSECT SELECT T2.driverid ,  T3.forename FROM races AS T1 JOIN results AS T2 ON T1.raceid = T2.raceid JOIN drivers AS T3 ON T2.driverid  =  T3.driverid WHERE T1.name = \"Chinese Grand Prix\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "formula_1",
+      "question": "What are the different ids and stop durations of all the drivers whose stop lasted longer than the driver in the race with the id 841?",
+      "gold_sql": "SELECT DISTINCT driverid ,  STOP FROM pitstops WHERE duration  >  (SELECT min(duration) FROM pitstops WHERE raceid  =  841)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "formula_1",
+      "question": "Find the id and location of circuits that belong to France or Belgium?",
+      "gold_sql": "SELECT circuitid ,  LOCATION FROM circuits WHERE country = \"France\" OR country = \"Belgium\"",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "formula_1",
+      "question": "What are the ids and last names of all drivers who participated in the most races?",
+      "gold_sql": "SELECT T1.driverid ,  T1.surname FROM drivers AS T1 JOIN results AS T2 ON T1.driverid = T2.driverid JOIN races AS T3 ON T2.raceid = T3.raceid GROUP BY T1.driverid ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cinema",
+      "question": "What are the title and director of the films without any schedule?",
+      "gold_sql": "SELECT title ,  directed_by FROM film WHERE film_id NOT IN (SELECT film_id FROM schedule)",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cinema",
+      "question": "What is the location with the most cinemas opened in year 2010 or later?",
+      "gold_sql": "SELECT LOCATION FROM cinema WHERE openning_year  >=  2010 GROUP BY LOCATION ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cinema",
+      "question": "Show all the locations where some cinemas were opened in both year 2010 and year 2011.",
+      "gold_sql": "SELECT LOCATION FROM cinema WHERE openning_year  =  2010 INTERSECT SELECT LOCATION FROM cinema WHERE openning_year  =  2011",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cinema",
+      "question": "Show director with the largest number of show times in total.",
+      "gold_sql": "SELECT T2.directed_by FROM schedule AS T1 JOIN film AS T2 ON T1.film_id  =  T2.film_id GROUP BY T2.directed_by ORDER BY sum(T1.show_times_per_day) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "cinema",
+      "question": "Show all the locations where no cinema has capacity over 800.",
+      "gold_sql": "SELECT LOCATION FROM cinema EXCEPT SELECT LOCATION FROM cinema WHERE capacity  >  800",
+      "hardness": "hard"
+    }
+  ]
+}
