@@ -1,0 +1,678 @@
+{
+  "meta": {
+    "input_file": "data\\input_files\\failures_row_count_mismatch.json",
+    "pool_seed": 42,
+    "num_dbs": 10,
+    "questions_per_db": "variable -- see per_db_counts",
+    "total_questions": 12,
+    "pool_hardness_breakdown": {
+      "hard": 6,
+      "extra": 6
+    },
+    "prompt_version": "prompt_v4",
+    "num_workers": 4,
+    "generated_at": "2026-08-09T16:13:07.289341+00:00",
+    "log_path": "C:\\Users\\tusha\\Documents\\github Repos\\spider-agent-workbench\\logs\\report_row_count_mismatch_v4_run_1_2026-08-09-16-11-53.jsonl"
+  },
+  "ex_summary": {
+    "total_questions": 12,
+    "total_score": 1,
+    "accuracy": 0.08333333333333333,
+    "by_status": {
+      "row_count_mismatch": {
+        "score": 0,
+        "total": 6
+      },
+      "no_sql": {
+        "score": 0,
+        "total": 5
+      },
+      "match": {
+        "score": 1,
+        "total": 1
+      }
+    },
+    "by_db_id": {
+      "machine_repair": {
+        "score": 0,
+        "total": 2
+      },
+      "csu_1": {
+        "score": 0,
+        "total": 1
+      },
+      "architecture": {
+        "score": 0,
+        "total": 1
+      },
+      "twitter_1": {
+        "score": 0,
+        "total": 2
+      },
+      "manufactory_1": {
+        "score": 0,
+        "total": 1
+      },
+      "tracking_grants_for_research": {
+        "score": 0,
+        "total": 1
+      },
+      "customer_complaints": {
+        "score": 0,
+        "total": 1
+      },
+      "party_host": {
+        "score": 1,
+        "total": 1
+      },
+      "cre_Theme_park": {
+        "score": 0,
+        "total": 1
+      },
+      "formula_1": {
+        "score": 0,
+        "total": 1
+      }
+    },
+    "by_difficulty": {
+      "hard": {
+        "score": 1,
+        "total": 6
+      },
+      "extra": {
+        "score": 0,
+        "total": 6
+      }
+    }
+  },
+  "em_summary": {
+    "total_questions": 12,
+    "total_score": 0,
+    "accuracy": 0.0,
+    "by_difficulty": {
+      "hard": {
+        "score": 0,
+        "total": 6
+      },
+      "extra": {
+        "score": 0,
+        "total": 6
+      }
+    },
+    "by_db_id": {
+      "machine_repair": {
+        "score": 0,
+        "total": 2
+      },
+      "csu_1": {
+        "score": 0,
+        "total": 1
+      },
+      "architecture": {
+        "score": 0,
+        "total": 1
+      },
+      "twitter_1": {
+        "score": 0,
+        "total": 2
+      },
+      "manufactory_1": {
+        "score": 0,
+        "total": 1
+      },
+      "tracking_grants_for_research": {
+        "score": 0,
+        "total": 1
+      },
+      "customer_complaints": {
+        "score": 0,
+        "total": 1
+      },
+      "party_host": {
+        "score": 0,
+        "total": 1
+      },
+      "cre_Theme_park": {
+        "score": 0,
+        "total": 1
+      },
+      "formula_1": {
+        "score": 0,
+        "total": 1
+      }
+    }
+  },
+  "feature_summary": {
+    "has_join": {
+      "score": 1,
+      "total": 12,
+      "accuracy": 0.08333333333333333
+    },
+    "has_group_by": {
+      "score": 0,
+      "total": 4,
+      "accuracy": 0.0
+    },
+    "has_subquery": {
+      "score": 0,
+      "total": 1,
+      "accuracy": 0.0
+    },
+    "has_set_op": {
+      "score": 0,
+      "total": 2,
+      "accuracy": 0.0
+    }
+  },
+  "guardrail_summary": {
+    "by_status": {
+      "row_count_mismatch": 6,
+      "no_sql": 5
+    },
+    "by_difficulty": {
+      "hard": {
+        "row_count_mismatch": 4,
+        "no_sql": 1
+      },
+      "extra": {
+        "no_sql": 4,
+        "row_count_mismatch": 2
+      }
+    }
+  },
+  "operational_summary": {
+    "avg_turns": 6.333333333333333,
+    "avg_latency_seconds": 17.79607423333194,
+    "avg_input_tokens": 12099.333333333334,
+    "avg_output_tokens": 720.8333333333334,
+    "total_input_tokens": 145192,
+    "total_output_tokens": 8650
+  },
+  "failures": [
+    {
+      "db_id": "machine_repair",
+      "question": "Show names of technicians who are assigned to repair machines with value point more than 70.",
+      "predicted_sql": "SELECT DISTINCT t.Name FROM technician t JOIN repair_assignment ra ON t.technician_id = ra.technician_id JOIN machine m ON ra.Machine_ID = m.Machine_ID WHERE m.value_points > 70;",
+      "gold_sql": "SELECT T3.Name FROM repair_assignment AS T1 JOIN machine AS T2 ON T1.machine_id  =  T2.machine_id JOIN technician AS T3 ON T1.technician_ID  =  T3.technician_ID WHERE T2.value_points  >  70",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=7 rows, predicted=3 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 12.986519199999748,
+      "input_tokens": 20162,
+      "output_tokens": 852,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "machine_repair",
+      "question": "What are the names of the technicians that are assigned to repair machines with more point values than 70?",
+      "predicted_sql": "SELECT DISTINCT t.Name\nFROM technician t\nJOIN repair_assignment ra ON t.technician_id = ra.technician_id\nJOIN machine m ON ra.Machine_ID = m.Machine_ID\nWHERE m.value_points > 70",
+      "gold_sql": "SELECT T3.Name FROM repair_assignment AS T1 JOIN machine AS T2 ON T1.machine_id  =  T2.machine_id JOIN technician AS T3 ON T1.technician_ID  =  T3.technician_ID WHERE T2.value_points  >  70",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=7 rows, predicted=3 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 14.457388900002115,
+      "input_tokens": 21268,
+      "output_tokens": 1180,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "csu_1",
+      "question": "report the total number of degrees granted between 1998 and 2002.",
+      "predicted_sql": "SELECT SUM(Degrees) FROM degrees WHERE Year BETWEEN 1998 AND 2002",
+      "gold_sql": "SELECT T1.campus ,  sum(T2.degrees) FROM campuses AS T1 JOIN degrees AS T2 ON T1.id  =  T2.campus WHERE T2.year  >=  1998 AND T2.year  <=  2002 GROUP BY T1.campus",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=23 rows, predicted=1 rows",
+      "turns": 4,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 7.455807899998035,
+      "input_tokens": 11734,
+      "output_tokens": 457,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "architecture",
+      "question": "show the name of all bridges that was designed by american archtect, and sort the result by the bridge feet length.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT t1.name FROM bridge AS t1 JOIN architect AS t2 ON t1.architect_id  =  t2.id WHERE t2.nationality  =  'American' ORDER BY t1.length_feet",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 21.515287400005036,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the names of the users whose number of followers is greater than that of the user named \"Tyler Swift\".",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T1.name FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  (SELECT count(*) FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 WHERE T1.name  =  'Tyler Swift')",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 18.89628210000228,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the id of users who are followed by Mary or Susan.",
+      "predicted_sql": "SELECT f2 FROM follows WHERE f1 IN (SELECT uid FROM user_profiles WHERE name IN ('Mary','Susan'))",
+      "gold_sql": "SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  \"Mary\" OR T1.name  =  \"Susan\"",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=2 rows, predicted=1 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 14.591582499997457,
+      "input_tokens": 20627,
+      "output_tokens": 1300,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "What are the names of products produced by both Creative Labs and Sony?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Creative Labs' INTERSECT SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 33.437979199996335,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "What is the response received date for the document described as Regular that was granted more than 100 dollars?",
+      "predicted_sql": "SELECT d.response_received_date\nFROM Documents d\nJOIN Document_Types dt ON d.document_type_code = dt.document_type_code\nJOIN Grants g ON d.grant_id = g.grant_id\nWHERE dt.document_description = 'Regular'\nAND g.grant_amount > 100",
+      "gold_sql": "SELECT T1.response_received_date FROM Documents AS T1 JOIN Document_Types AS T2 ON T1.document_type_code  =  T2.document_type_code JOIN Grants AS T3 ON T1.grant_id  =  T3.grant_id WHERE T2.document_description  =  'Regular' OR T3.grant_amount  >  100",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=10 rows, predicted=3 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 17.076938500002143,
+      "input_tokens": 23612,
+      "output_tokens": 1850,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "customer_complaints",
+      "question": "What are the emails of customers who have filed complaints on the product which has had the greatest number of complaints?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT t1.email_address FROM customers AS t1 JOIN complaints AS t2 ON t1.customer_id  =  t2.customer_id GROUP BY t1.customer_id ORDER BY count(*) LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 20.29929429999902,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "Find the tourist attractions that have parking or shopping as their feature details. What are the names of the attractions?",
+      "predicted_sql": "SELECT DISTINCT T.Name FROM Tourist_Attractions T JOIN Tourist_Attraction_Features TF ON T.Tourist_Attraction_ID = TF.Tourist_Attraction_ID JOIN Features F ON TF.Feature_ID = F.Feature_ID WHERE F.Feature_Details IN ('parking','shopping')",
+      "gold_sql": "SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'park' UNION SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'shopping'",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=9 rows, predicted=8 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 13.922853099997155,
+      "input_tokens": 21396,
+      "output_tokens": 1333,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "formula_1",
+      "question": "What is the average fastest lap speed for races held after 2004, for each race, ordered by year?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT avg(T2.fastestlapspeed) ,  T1.name ,  T1.year FROM races AS T1 JOIN results AS T2 ON T1.raceid = T2.raceid WHERE T1.year > 2014 GROUP BY T1.name ORDER BY T1.year",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 20.851578399990103,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    }
+  ],
+  "results": [
+    {
+      "db_id": "machine_repair",
+      "question": "Show names of technicians who are assigned to repair machines with value point more than 70.",
+      "predicted_sql": "SELECT DISTINCT t.Name FROM technician t JOIN repair_assignment ra ON t.technician_id = ra.technician_id JOIN machine m ON ra.Machine_ID = m.Machine_ID WHERE m.value_points > 70;",
+      "gold_sql": "SELECT T3.Name FROM repair_assignment AS T1 JOIN machine AS T2 ON T1.machine_id  =  T2.machine_id JOIN technician AS T3 ON T1.technician_ID  =  T3.technician_ID WHERE T2.value_points  >  70",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=7 rows, predicted=3 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 12.986519199999748,
+      "input_tokens": 20162,
+      "output_tokens": 852,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "machine_repair",
+      "question": "What are the names of the technicians that are assigned to repair machines with more point values than 70?",
+      "predicted_sql": "SELECT DISTINCT t.Name\nFROM technician t\nJOIN repair_assignment ra ON t.technician_id = ra.technician_id\nJOIN machine m ON ra.Machine_ID = m.Machine_ID\nWHERE m.value_points > 70",
+      "gold_sql": "SELECT T3.Name FROM repair_assignment AS T1 JOIN machine AS T2 ON T1.machine_id  =  T2.machine_id JOIN technician AS T3 ON T1.technician_ID  =  T3.technician_ID WHERE T2.value_points  >  70",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=7 rows, predicted=3 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 14.457388900002115,
+      "input_tokens": 21268,
+      "output_tokens": 1180,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "csu_1",
+      "question": "report the total number of degrees granted between 1998 and 2002.",
+      "predicted_sql": "SELECT SUM(Degrees) FROM degrees WHERE Year BETWEEN 1998 AND 2002",
+      "gold_sql": "SELECT T1.campus ,  sum(T2.degrees) FROM campuses AS T1 JOIN degrees AS T2 ON T1.id  =  T2.campus WHERE T2.year  >=  1998 AND T2.year  <=  2002 GROUP BY T1.campus",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=23 rows, predicted=1 rows",
+      "turns": 4,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 7.455807899998035,
+      "input_tokens": 11734,
+      "output_tokens": 457,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "architecture",
+      "question": "show the name of all bridges that was designed by american archtect, and sort the result by the bridge feet length.",
+      "predicted_sql": null,
+      "gold_sql": "SELECT t1.name FROM bridge AS t1 JOIN architect AS t2 ON t1.architect_id  =  t2.id WHERE t2.nationality  =  'American' ORDER BY t1.length_feet",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 21.515287400005036,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the names of the users whose number of followers is greater than that of the user named \"Tyler Swift\".",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T1.name FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  (SELECT count(*) FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 WHERE T1.name  =  'Tyler Swift')",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 18.89628210000228,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the id of users who are followed by Mary or Susan.",
+      "predicted_sql": "SELECT f2 FROM follows WHERE f1 IN (SELECT uid FROM user_profiles WHERE name IN ('Mary','Susan'))",
+      "gold_sql": "SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  \"Mary\" OR T1.name  =  \"Susan\"",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=2 rows, predicted=1 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 14.591582499997457,
+      "input_tokens": 20627,
+      "output_tokens": 1300,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "What are the names of products produced by both Creative Labs and Sony?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Creative Labs' INTERSECT SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony'",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 33.437979199996335,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "What is the response received date for the document described as Regular that was granted more than 100 dollars?",
+      "predicted_sql": "SELECT d.response_received_date\nFROM Documents d\nJOIN Document_Types dt ON d.document_type_code = dt.document_type_code\nJOIN Grants g ON d.grant_id = g.grant_id\nWHERE dt.document_description = 'Regular'\nAND g.grant_amount > 100",
+      "gold_sql": "SELECT T1.response_received_date FROM Documents AS T1 JOIN Document_Types AS T2 ON T1.document_type_code  =  T2.document_type_code JOIN Grants AS T3 ON T1.grant_id  =  T3.grant_id WHERE T2.document_description  =  'Regular' OR T3.grant_amount  >  100",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=10 rows, predicted=3 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 17.076938500002143,
+      "input_tokens": 23612,
+      "output_tokens": 1850,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "customer_complaints",
+      "question": "What are the emails of customers who have filed complaints on the product which has had the greatest number of complaints?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT t1.email_address FROM customers AS t1 JOIN complaints AS t2 ON t1.customer_id  =  t2.customer_id GROUP BY t1.customer_id ORDER BY count(*) LIMIT 1",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 20.29929429999902,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "party_host",
+      "question": "For each party, find its location and the name of its host. Sort the result in ascending order of the age of the host.",
+      "predicted_sql": "SELECT p.Location, h.Name FROM party p JOIN party_host ph ON p.Party_ID = ph.Party_ID JOIN host h ON ph.Host_ID = h.Host_ID ORDER BY CAST(h.Age AS INTEGER)",
+      "gold_sql": "SELECT T3.Location ,  T2.Name FROM party_host AS T1 JOIN HOST AS T2 ON T1.Host_ID  =  T2.Host_ID JOIN party AS T3 ON T1.Party_ID  =  T3.Party_ID ORDER BY T2.Age",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 18.06137929999386,
+      "input_tokens": 26393,
+      "output_tokens": 1678,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "Find the tourist attractions that have parking or shopping as their feature details. What are the names of the attractions?",
+      "predicted_sql": "SELECT DISTINCT T.Name FROM Tourist_Attractions T JOIN Tourist_Attraction_Features TF ON T.Tourist_Attraction_ID = TF.Tourist_Attraction_ID JOIN Features F ON TF.Feature_ID = F.Feature_ID WHERE F.Feature_Details IN ('parking','shopping')",
+      "gold_sql": "SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'park' UNION SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'shopping'",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=9 rows, predicted=8 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 13.922853099997155,
+      "input_tokens": 21396,
+      "output_tokens": 1333,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "formula_1",
+      "question": "What is the average fastest lap speed for races held after 2004, for each race, ordered by year?",
+      "predicted_sql": null,
+      "gold_sql": "SELECT avg(T2.fastestlapspeed) ,  T1.name ,  T1.year FROM races AS T1 JOIN results AS T2 ON T1.raceid = T2.raceid WHERE T1.year > 2014 GROUP BY T1.name ORDER BY T1.year",
+      "score": 0,
+      "status": "no_sql",
+      "detail": "Agent did not submit a query. | agent_notes: Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "turns": 7,
+      "hit_turn_limit": true,
+      "notes": "Error: AgentError: Recursion limit of 15 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.\nFor troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 20.851578399990103,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    }
+  ]
+}

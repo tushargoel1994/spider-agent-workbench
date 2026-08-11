@@ -1,0 +1,614 @@
+{
+  "meta": {
+    "input_file": "data\\input_files\\failures_row_count_mismatch.json",
+    "pool_seed": 42,
+    "num_dbs": 10,
+    "questions_per_db": "variable -- see per_db_counts",
+    "total_questions": 12,
+    "pool_hardness_breakdown": {
+      "hard": 6,
+      "extra": 6
+    },
+    "prompt_version": "prompt_v4",
+    "num_workers": 4,
+    "generated_at": "2026-08-09T16:44:44.795387+00:00",
+    "log_path": "C:\\Users\\tusha\\Documents\\github Repos\\spider-agent-workbench\\logs\\report_row_count_mismatch_v4_run_2_2026-08-09-16-43-44.jsonl"
+  },
+  "ex_summary": {
+    "total_questions": 12,
+    "total_score": 4,
+    "accuracy": 0.3333333333333333,
+    "by_status": {
+      "match": {
+        "score": 4,
+        "total": 4
+      },
+      "row_count_mismatch": {
+        "score": 0,
+        "total": 7
+      },
+      "value_mismatch": {
+        "score": 0,
+        "total": 1
+      }
+    },
+    "by_db_id": {
+      "machine_repair": {
+        "score": 2,
+        "total": 2
+      },
+      "csu_1": {
+        "score": 0,
+        "total": 1
+      },
+      "architecture": {
+        "score": 1,
+        "total": 1
+      },
+      "twitter_1": {
+        "score": 0,
+        "total": 2
+      },
+      "manufactory_1": {
+        "score": 1,
+        "total": 1
+      },
+      "tracking_grants_for_research": {
+        "score": 0,
+        "total": 1
+      },
+      "customer_complaints": {
+        "score": 0,
+        "total": 1
+      },
+      "party_host": {
+        "score": 0,
+        "total": 1
+      },
+      "cre_Theme_park": {
+        "score": 0,
+        "total": 1
+      },
+      "formula_1": {
+        "score": 0,
+        "total": 1
+      }
+    },
+    "by_difficulty": {
+      "hard": {
+        "score": 3,
+        "total": 6
+      },
+      "extra": {
+        "score": 1,
+        "total": 6
+      }
+    }
+  },
+  "em_summary": {
+    "total_questions": 12,
+    "total_score": 0,
+    "accuracy": 0.0,
+    "by_difficulty": {
+      "hard": {
+        "score": 0,
+        "total": 6
+      },
+      "extra": {
+        "score": 0,
+        "total": 6
+      }
+    },
+    "by_db_id": {
+      "machine_repair": {
+        "score": 0,
+        "total": 2
+      },
+      "csu_1": {
+        "score": 0,
+        "total": 1
+      },
+      "architecture": {
+        "score": 0,
+        "total": 1
+      },
+      "twitter_1": {
+        "score": 0,
+        "total": 2
+      },
+      "manufactory_1": {
+        "score": 0,
+        "total": 1
+      },
+      "tracking_grants_for_research": {
+        "score": 0,
+        "total": 1
+      },
+      "customer_complaints": {
+        "score": 0,
+        "total": 1
+      },
+      "party_host": {
+        "score": 0,
+        "total": 1
+      },
+      "cre_Theme_park": {
+        "score": 0,
+        "total": 1
+      },
+      "formula_1": {
+        "score": 0,
+        "total": 1
+      }
+    }
+  },
+  "feature_summary": {
+    "has_join": {
+      "score": 4,
+      "total": 12,
+      "accuracy": 0.3333333333333333
+    },
+    "has_group_by": {
+      "score": 0,
+      "total": 4,
+      "accuracy": 0.0
+    },
+    "has_subquery": {
+      "score": 0,
+      "total": 1,
+      "accuracy": 0.0
+    },
+    "has_set_op": {
+      "score": 1,
+      "total": 2,
+      "accuracy": 0.5
+    }
+  },
+  "guardrail_summary": {
+    "by_status": {
+      "row_count_mismatch": 7,
+      "value_mismatch": 1
+    },
+    "by_difficulty": {
+      "hard": {
+        "row_count_mismatch": 3
+      },
+      "extra": {
+        "row_count_mismatch": 4,
+        "value_mismatch": 1
+      }
+    }
+  },
+  "operational_summary": {
+    "avg_turns": 6.166666666666667,
+    "avg_latency_seconds": 14.0414620916672,
+    "avg_input_tokens": 24764.833333333332,
+    "avg_output_tokens": 1252.25,
+    "total_input_tokens": 297178,
+    "total_output_tokens": 15027
+  },
+  "failures": [
+    {
+      "db_id": "csu_1",
+      "question": "report the total number of degrees granted between 1998 and 2002.",
+      "predicted_sql": "SELECT SUM(Degrees) FROM degrees WHERE Year BETWEEN 1998 AND 2002",
+      "gold_sql": "SELECT T1.campus ,  sum(T2.degrees) FROM campuses AS T1 JOIN degrees AS T2 ON T1.id  =  T2.campus WHERE T2.year  >=  1998 AND T2.year  <=  2002 GROUP BY T1.campus",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=23 rows, predicted=1 rows",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 7.546385699999519,
+      "input_tokens": 16586,
+      "output_tokens": 444,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the names of the users whose number of followers is greater than that of the user named \"Tyler Swift\".",
+      "predicted_sql": "SELECT name FROM user_profiles WHERE followers > (SELECT followers FROM user_profiles WHERE name = 'Tyler Swift')",
+      "gold_sql": "SELECT T1.name FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  (SELECT count(*) FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 WHERE T1.name  =  'Tyler Swift')",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=1 rows, predicted=0 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.686673399992287,
+      "input_tokens": 21650,
+      "output_tokens": 705,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the id of users who are followed by Mary or Susan.",
+      "predicted_sql": "SELECT DISTINCT f2 FROM follows WHERE f1 IN (SELECT uid FROM user_profiles WHERE name IN ('Mary','Susan'))",
+      "gold_sql": "SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  \"Mary\" OR T1.name  =  \"Susan\"",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=2 rows, predicted=1 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 12.091342600004282,
+      "input_tokens": 22060,
+      "output_tokens": 1016,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "What is the response received date for the document described as Regular that was granted more than 100 dollars?",
+      "predicted_sql": "SELECT d.response_received_date FROM Documents d JOIN Grants g ON d.grant_id = g.grant_id JOIN Document_Types dt ON d.document_type_code = dt.document_type_code WHERE dt.document_description = 'Regular' AND g.grant_amount > 100",
+      "gold_sql": "SELECT T1.response_received_date FROM Documents AS T1 JOIN Document_Types AS T2 ON T1.document_type_code  =  T2.document_type_code JOIN Grants AS T3 ON T1.grant_id  =  T3.grant_id WHERE T2.document_description  =  'Regular' OR T3.grant_amount  >  100",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=10 rows, predicted=3 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 12.1925884999946,
+      "input_tokens": 23190,
+      "output_tokens": 958,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "customer_complaints",
+      "question": "What are the emails of customers who have filed complaints on the product which has had the greatest number of complaints?",
+      "predicted_sql": "SELECT DISTINCT c.email_address FROM Customers c JOIN Complaints co ON c.customer_id = co.customer_id WHERE co.product_id = (SELECT product_id FROM Complaints GROUP BY product_id ORDER BY COUNT(*) DESC LIMIT 1)",
+      "gold_sql": "SELECT t1.email_address FROM customers AS t1 JOIN complaints AS t2 ON t1.customer_id  =  t2.customer_id GROUP BY t1.customer_id ORDER BY count(*) LIMIT 1",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=1 rows, predicted=5 rows",
+      "turns": 8,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 17.299995900000795,
+      "input_tokens": 35176,
+      "output_tokens": 1580,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "party_host",
+      "question": "For each party, find its location and the name of its host. Sort the result in ascending order of the age of the host.",
+      "predicted_sql": "SELECT party.Location, host.Name\nFROM party\nJOIN party_host ON party.Party_ID = party_host.Party_ID\nJOIN host ON host.Host_ID = party_host.Host_ID\nWHERE party_host.Is_Main_in_Charge = 'T'\nORDER BY CAST(host.Age AS INTEGER)",
+      "gold_sql": "SELECT T3.Location ,  T2.Name FROM party_host AS T1 JOIN HOST AS T2 ON T1.Host_ID  =  T2.Host_ID JOIN party AS T3 ON T1.Party_ID  =  T3.Party_ID ORDER BY T2.Age",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=6 rows, predicted=4 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 12.35542279999936,
+      "input_tokens": 23386,
+      "output_tokens": 1161,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "Find the tourist attractions that have parking or shopping as their feature details. What are the names of the attractions?",
+      "predicted_sql": "SELECT ta.Name\nFROM Tourist_Attractions ta\nJOIN Tourist_Attraction_Features taf ON ta.Tourist_Attraction_ID = taf.Tourist_Attraction_ID\nJOIN Features f ON taf.Feature_ID = f.Feature_ID\nWHERE f.Feature_Details IN ('parking', 'shopping')",
+      "gold_sql": "SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'park' UNION SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'shopping'",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 10.662281800003257,
+      "input_tokens": 22366,
+      "output_tokens": 922,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "formula_1",
+      "question": "What is the average fastest lap speed for races held after 2004, for each race, ordered by year?",
+      "predicted_sql": "SELECT r.year, r.name, AVG(re.fastestLapSpeed) AS avg_speed\nFROM races r JOIN results re ON r.raceId = re.raceId\nWHERE r.year > 2004\nGROUP BY r.raceId\nORDER BY r.year",
+      "gold_sql": "SELECT avg(T2.fastestlapspeed) ,  T1.name ,  T1.year FROM races AS T1 JOIN results AS T2 ON T1.raceid = T2.raceid WHERE T1.year > 2014 GROUP BY T1.name ORDER BY T1.year",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=22 rows, predicted=245 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 11.34157829999458,
+      "input_tokens": 25238,
+      "output_tokens": 975,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    }
+  ],
+  "results": [
+    {
+      "db_id": "machine_repair",
+      "question": "Show names of technicians who are assigned to repair machines with value point more than 70.",
+      "predicted_sql": "SELECT t.Name FROM technician t JOIN repair_assignment ra ON t.technician_id = ra.technician_id JOIN machine m ON ra.Machine_ID = m.Machine_ID WHERE m.value_points > 70",
+      "gold_sql": "SELECT T3.Name FROM repair_assignment AS T1 JOIN machine AS T2 ON T1.machine_id  =  T2.machine_id JOIN technician AS T3 ON T1.technician_ID  =  T3.technician_ID WHERE T2.value_points  >  70",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 8.452597600000445,
+      "input_tokens": 17976,
+      "output_tokens": 679,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "machine_repair",
+      "question": "What are the names of the technicians that are assigned to repair machines with more point values than 70?",
+      "predicted_sql": "SELECT t.Name FROM technician t JOIN repair_assignment ra ON t.technician_id = ra.technician_id JOIN machine m ON ra.Machine_ID = m.Machine_ID WHERE m.value_points > 70",
+      "gold_sql": "SELECT T3.Name FROM repair_assignment AS T1 JOIN machine AS T2 ON T1.machine_id  =  T2.machine_id JOIN technician AS T3 ON T1.technician_ID  =  T3.technician_ID WHERE T2.value_points  >  70",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 8.56798270001309,
+      "input_tokens": 17768,
+      "output_tokens": 710,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "csu_1",
+      "question": "report the total number of degrees granted between 1998 and 2002.",
+      "predicted_sql": "SELECT SUM(Degrees) FROM degrees WHERE Year BETWEEN 1998 AND 2002",
+      "gold_sql": "SELECT T1.campus ,  sum(T2.degrees) FROM campuses AS T1 JOIN degrees AS T2 ON T1.id  =  T2.campus WHERE T2.year  >=  1998 AND T2.year  <=  2002 GROUP BY T1.campus",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=23 rows, predicted=1 rows",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 7.546385699999519,
+      "input_tokens": 16586,
+      "output_tokens": 444,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "architecture",
+      "question": "show the name of all bridges that was designed by american archtect, and sort the result by the bridge feet length.",
+      "predicted_sql": "SELECT b.name FROM bridge b JOIN architect a ON b.architect_id = a.id WHERE a.nationality = 'American' ORDER BY b.length_feet",
+      "gold_sql": "SELECT t1.name FROM bridge AS t1 JOIN architect AS t2 ON t1.architect_id  =  t2.id WHERE t2.nationality  =  'American' ORDER BY t1.length_feet",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 10.952019400006975,
+      "input_tokens": 22192,
+      "output_tokens": 873,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the names of the users whose number of followers is greater than that of the user named \"Tyler Swift\".",
+      "predicted_sql": "SELECT name FROM user_profiles WHERE followers > (SELECT followers FROM user_profiles WHERE name = 'Tyler Swift')",
+      "gold_sql": "SELECT T1.name FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  (SELECT count(*) FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 WHERE T1.name  =  'Tyler Swift')",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=1 rows, predicted=0 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.686673399992287,
+      "input_tokens": 21650,
+      "output_tokens": 705,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "twitter_1",
+      "question": "Find the id of users who are followed by Mary or Susan.",
+      "predicted_sql": "SELECT DISTINCT f2 FROM follows WHERE f1 IN (SELECT uid FROM user_profiles WHERE name IN ('Mary','Susan'))",
+      "gold_sql": "SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  \"Mary\" OR T1.name  =  \"Susan\"",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=2 rows, predicted=1 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 12.091342600004282,
+      "input_tokens": 22060,
+      "output_tokens": 1016,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "What are the names of products produced by both Creative Labs and Sony?",
+      "predicted_sql": "SELECT Name FROM Products WHERE Manufacturer = (SELECT Code FROM Manufacturers WHERE Name = 'Creative Labs') INTERSECT SELECT Name FROM Products WHERE Manufacturer = (SELECT Code FROM Manufacturers WHERE Name = 'Sony')",
+      "gold_sql": "SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Creative Labs' INTERSECT SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony'",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 9,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 47.3486763999972,
+      "input_tokens": 49590,
+      "output_tokens": 5004,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "What is the response received date for the document described as Regular that was granted more than 100 dollars?",
+      "predicted_sql": "SELECT d.response_received_date FROM Documents d JOIN Grants g ON d.grant_id = g.grant_id JOIN Document_Types dt ON d.document_type_code = dt.document_type_code WHERE dt.document_description = 'Regular' AND g.grant_amount > 100",
+      "gold_sql": "SELECT T1.response_received_date FROM Documents AS T1 JOIN Document_Types AS T2 ON T1.document_type_code  =  T2.document_type_code JOIN Grants AS T3 ON T1.grant_id  =  T3.grant_id WHERE T2.document_description  =  'Regular' OR T3.grant_amount  >  100",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=10 rows, predicted=3 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 12.1925884999946,
+      "input_tokens": 23190,
+      "output_tokens": 958,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "customer_complaints",
+      "question": "What are the emails of customers who have filed complaints on the product which has had the greatest number of complaints?",
+      "predicted_sql": "SELECT DISTINCT c.email_address FROM Customers c JOIN Complaints co ON c.customer_id = co.customer_id WHERE co.product_id = (SELECT product_id FROM Complaints GROUP BY product_id ORDER BY COUNT(*) DESC LIMIT 1)",
+      "gold_sql": "SELECT t1.email_address FROM customers AS t1 JOIN complaints AS t2 ON t1.customer_id  =  t2.customer_id GROUP BY t1.customer_id ORDER BY count(*) LIMIT 1",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=1 rows, predicted=5 rows",
+      "turns": 8,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 17.299995900000795,
+      "input_tokens": 35176,
+      "output_tokens": 1580,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "party_host",
+      "question": "For each party, find its location and the name of its host. Sort the result in ascending order of the age of the host.",
+      "predicted_sql": "SELECT party.Location, host.Name\nFROM party\nJOIN party_host ON party.Party_ID = party_host.Party_ID\nJOIN host ON host.Host_ID = party_host.Host_ID\nWHERE party_host.Is_Main_in_Charge = 'T'\nORDER BY CAST(host.Age AS INTEGER)",
+      "gold_sql": "SELECT T3.Location ,  T2.Name FROM party_host AS T1 JOIN HOST AS T2 ON T1.Host_ID  =  T2.Host_ID JOIN party AS T3 ON T1.Party_ID  =  T3.Party_ID ORDER BY T2.Age",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=6 rows, predicted=4 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 12.35542279999936,
+      "input_tokens": 23386,
+      "output_tokens": 1161,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "Find the tourist attractions that have parking or shopping as their feature details. What are the names of the attractions?",
+      "predicted_sql": "SELECT ta.Name\nFROM Tourist_Attractions ta\nJOIN Tourist_Attraction_Features taf ON ta.Tourist_Attraction_ID = taf.Tourist_Attraction_ID\nJOIN Features f ON taf.Feature_ID = f.Feature_ID\nWHERE f.Feature_Details IN ('parking', 'shopping')",
+      "gold_sql": "SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'park' UNION SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'shopping'",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 10.662281800003257,
+      "input_tokens": 22366,
+      "output_tokens": 922,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "formula_1",
+      "question": "What is the average fastest lap speed for races held after 2004, for each race, ordered by year?",
+      "predicted_sql": "SELECT r.year, r.name, AVG(re.fastestLapSpeed) AS avg_speed\nFROM races r JOIN results re ON r.raceId = re.raceId\nWHERE r.year > 2004\nGROUP BY r.raceId\nORDER BY r.year",
+      "gold_sql": "SELECT avg(T2.fastestlapspeed) ,  T1.name ,  T1.year FROM races AS T1 JOIN results AS T2 ON T1.raceid = T2.raceid WHERE T1.year > 2014 GROUP BY T1.name ORDER BY T1.year",
+      "score": 0,
+      "status": "row_count_mismatch",
+      "detail": "gold=22 rows, predicted=245 rows",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 11.34157829999458,
+      "input_tokens": 25238,
+      "output_tokens": 975,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    }
+  ]
+}

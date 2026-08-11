@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "seed": 42,
+    "num_dbs": 8,
+    "questions_per_db": "variable -- see per_db_counts",
+    "per_db_counts": {
+      "apartment_rentals": 2,
+      "baseball_1": 1,
+      "candidate_poll": 1,
+      "cre_Drama_Workshop_Groups": 1,
+      "music_1": 2,
+      "perpetrator": 1,
+      "pilot_record": 1,
+      "tracking_grants_for_research": 2
+    },
+    "total_questions": 11,
+    "hardness_breakdown": {
+      "hard": 8,
+      "extra": 3
+    },
+    "split": "train",
+    "source_report": "data\\output_files\\hard_question_report.json",
+    "source_pool": "data\\input_files\\hard_questions_pool.json",
+    "failure_status_filter": "column_count_mismatch",
+    "generated_at": "2026-08-09T15:56:51.976282+00:00"
+  },
+  "questions": [
+    {
+      "db_id": "music_1",
+      "question": "What are the top 3 artists with the largest number of songs in the language Bangla?",
+      "gold_sql": "SELECT T1.artist_name FROM artist AS T1 JOIN song AS T2 ON T1.artist_name  =  T2.artist_name WHERE T2.languages  =  \"bangla\" GROUP BY T2.artist_name ORDER BY count(*) DESC LIMIT 3",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "music_1",
+      "question": "Find the top 3 artists who have the largest number of songs works whose language is Bangla.",
+      "gold_sql": "SELECT T1.artist_name FROM artist AS T1 JOIN song AS T2 ON T1.artist_name  =  T2.artist_name WHERE T2.languages  =  \"bangla\" GROUP BY T2.artist_name ORDER BY count(*) DESC LIMIT 3",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "candidate_poll",
+      "question": "which gender got the highest average uncertain ratio.",
+      "gold_sql": "SELECT t1.sex FROM people AS t1 JOIN candidate AS t2 ON t1.people_id  =  t2.people_id GROUP BY t1.sex ORDER BY avg(t2.unsure_rate) DESC LIMIT 1",
+      "hardness": "extra"
+    },
+    {
+      "db_id": "apartment_rentals",
+      "question": "What are the top three apartment types in terms of the average room count? Give me the",
+      "gold_sql": "SELECT apt_type_code FROM Apartments GROUP BY apt_type_code ORDER BY avg(room_count) DESC LIMIT 3",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "apartment_rentals",
+      "question": "Show the top 3 apartment type codes sorted by the average number of rooms in descending order.",
+      "gold_sql": "SELECT apt_type_code FROM Apartments GROUP BY apt_type_code ORDER BY avg(room_count) DESC LIMIT 3",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "pilot_record",
+      "question": "Show the most common nationality of pilots.",
+      "gold_sql": "SELECT Nationality FROM pilot GROUP BY Nationality ORDER BY COUNT(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "What are the details for the projects which were launched by the organization with the most projects?",
+      "gold_sql": "SELECT project_details FROM Projects WHERE organisation_id IN ( SELECT organisation_id FROM Projects GROUP BY organisation_id ORDER BY count(*) DESC LIMIT 1 )",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "Which projects have no outcome? List the project details.",
+      "gold_sql": "SELECT project_details FROM Projects WHERE project_id NOT IN ( SELECT project_id FROM Project_outcomes )",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "List three countries which are the origins of the least players.",
+      "gold_sql": "SELECT birth_country FROM player GROUP BY birth_country ORDER BY count(*) ASC LIMIT 3;",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "perpetrator",
+      "question": "What is the country that has the most perpetrators?",
+      "gold_sql": "SELECT Country ,  COUNT(*) FROM perpetrator GROUP BY Country ORDER BY COUNT(*) DESC LIMIT 1",
+      "hardness": "hard"
+    },
+    {
+      "db_id": "cre_Drama_Workshop_Groups",
+      "question": "What is the most frequent status of bookings?",
+      "gold_sql": "SELECT Status_Code FROM BOOKINGS GROUP BY Status_Code ORDER BY count(*) DESC LIMIT 1",
+      "hardness": "hard"
+    }
+  ]
+}
