@@ -1,8 +1,9 @@
 """
-The ReAct loop tying the LLM (via langchain-anthropic) to the tool set defined
-in tools.py (which is itself policed by guardrails.py). This is Phase 1/2's
-"agentic" agent: instead of asking for SQL in one shot, the model explores the
-schema with tools and only stops once it calls submit_final_sql.
+The ReAct loop tying the LLM to the tool set defined in tools.py (which is
+itself policed by guardrails.py). This is Phase 1/2's "agentic" agent:
+instead of asking for SQL in one shot, the model explores the schema with
+tools and only stops once it calls submit_final_sql. Agent construction
+itself (model/prompt/tool wiring) lives in agent_builder_factory.py.
 """
 
 from __future__ import annotations
@@ -10,48 +11,14 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from langchain.agents import create_agent
-from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import AIMessage, BaseMessage
 from langgraph.errors import GraphRecursionError
 
-from spider_agent_workbench.config import Settings
-from spider_agent_workbench import tools
+from spider_agent_workbench.agent_builder_factory import build_agent
 from spider_agent_workbench.guardrails.input_guardrails import run_input_guardrails
 from spider_agent_workbench.guardrails.output_guardrails import run_output_guardrails
-from spider_agent_workbench.paths import PROMPTS_DIR, DATABASES_DIR
-from spider_agent_workbench.constants import DEFAULT_MODEL, DEFAULT_MAX_TURNS
-
-
-DEFAULT_PROMPT_VERSION = "prompt_v3"
-
-
-TOOLS = [
-    tools.list_tables,
-    tools.describe_table,
-    tools.sample_rows,
-    tools.run_query,
-    tools.submit_final_sql,
-]
-
-
-def load_system_prompt(version: str = DEFAULT_PROMPT_VERSION) -> str:
-    """
-    Load a versioned prompt file. Never edit a prompt file in place —
-    write prompt_v{n+1}.txt instead so eval runs stay comparable.
-    """
-    path = PROMPTS_DIR / f"{version}.md"
-    text = path.read_text(encoding="utf-8")
-    # Strip a leading "<!-- v1: ... -->" changelog line if present.
-    lines = [line for line in text.splitlines() if not line.strip().startswith("<!--")]
-    return "\n".join(lines).strip()
-
-
-def build_agent(model_name: str = DEFAULT_MODEL, prompt_version: str = DEFAULT_PROMPT_VERSION):
-    """Build a compiled tool-using agent graph. Call once, reuse across questions."""
-    model = ChatAnthropic(model=model_name, api_key=Settings.anthropic_api_key)
-    system_prompt = load_system_prompt(prompt_version)
-    return create_agent(model=model, tools=TOOLS, system_prompt=system_prompt)
+from spider_agent_workbench.paths import DATABASES_DIR
+from spider_agent_workbench.constants import DEFAULT_MAX_TURNS
 
 
 @dataclass

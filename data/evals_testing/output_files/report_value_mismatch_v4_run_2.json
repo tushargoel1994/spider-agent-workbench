@@ -1,0 +1,580 @@
+{
+  "meta": {
+    "input_file": "data\\input_files\\failures_value_mismatch.json",
+    "pool_seed": 42,
+    "num_dbs": 7,
+    "questions_per_db": "variable -- see per_db_counts",
+    "total_questions": 10,
+    "pool_hardness_breakdown": {
+      "hard": 3,
+      "extra": 7
+    },
+    "prompt_version": "prompt_v4",
+    "num_workers": 4,
+    "generated_at": "2026-08-09T16:55:12.617330+00:00",
+    "log_path": "C:\\Users\\tusha\\Documents\\github Repos\\spider-agent-workbench\\logs\\report_value_mismatch_v4_run_2_2026-08-09-16-54-34.jsonl"
+  },
+  "ex_summary": {
+    "total_questions": 10,
+    "total_score": 0,
+    "accuracy": 0.0,
+    "by_status": {
+      "value_mismatch": {
+        "score": 0,
+        "total": 10
+      }
+    },
+    "by_db_id": {
+      "flight_company": {
+        "score": 0,
+        "total": 2
+      },
+      "manufactory_1": {
+        "score": 0,
+        "total": 2
+      },
+      "theme_gallery": {
+        "score": 0,
+        "total": 2
+      },
+      "mountain_photos": {
+        "score": 0,
+        "total": 1
+      },
+      "coffee_shop": {
+        "score": 0,
+        "total": 1
+      },
+      "cre_Theme_park": {
+        "score": 0,
+        "total": 1
+      },
+      "products_for_hire": {
+        "score": 0,
+        "total": 1
+      }
+    },
+    "by_difficulty": {
+      "hard": {
+        "score": 0,
+        "total": 3
+      },
+      "extra": {
+        "score": 0,
+        "total": 7
+      }
+    }
+  },
+  "em_summary": {
+    "total_questions": 10,
+    "total_score": 1,
+    "accuracy": 0.1,
+    "by_difficulty": {
+      "hard": {
+        "score": 0,
+        "total": 3
+      },
+      "extra": {
+        "score": 1,
+        "total": 7
+      }
+    },
+    "by_db_id": {
+      "flight_company": {
+        "score": 0,
+        "total": 2
+      },
+      "manufactory_1": {
+        "score": 0,
+        "total": 2
+      },
+      "theme_gallery": {
+        "score": 0,
+        "total": 2
+      },
+      "mountain_photos": {
+        "score": 0,
+        "total": 1
+      },
+      "coffee_shop": {
+        "score": 1,
+        "total": 1
+      },
+      "cre_Theme_park": {
+        "score": 0,
+        "total": 1
+      },
+      "products_for_hire": {
+        "score": 0,
+        "total": 1
+      }
+    }
+  },
+  "feature_summary": {
+    "has_join": {
+      "score": 0,
+      "total": 9,
+      "accuracy": 0.0
+    },
+    "has_group_by": {
+      "score": 0,
+      "total": 3,
+      "accuracy": 0.0
+    },
+    "has_subquery": {
+      "score": 0,
+      "total": 3,
+      "accuracy": 0.0
+    },
+    "has_set_op": {
+      "score": 0,
+      "total": 1,
+      "accuracy": 0.0
+    }
+  },
+  "guardrail_summary": {
+    "by_status": {
+      "value_mismatch": 10
+    },
+    "by_difficulty": {
+      "hard": {
+        "value_mismatch": 3
+      },
+      "extra": {
+        "value_mismatch": 7
+      }
+    }
+  },
+  "operational_summary": {
+    "avg_turns": 5.6,
+    "avg_latency_seconds": 10.376357839998672,
+    "avg_input_tokens": 21284.5,
+    "avg_output_tokens": 771.6,
+    "total_input_tokens": 212845,
+    "total_output_tokens": 7716
+  },
+  "failures": [
+    {
+      "db_id": "flight_company",
+      "question": "How many companies operates airlines in each airport?",
+      "predicted_sql": "SELECT a.name, COUNT(*) FROM airport a JOIN flight f ON a.id = f.airport_id GROUP BY a.name",
+      "gold_sql": "SELECT T3.id ,  count(*) FROM operate_company AS T1 JOIN flight AS t2 ON T1.id  =  T2.company_id JOIN airport AS T3 ON T2.airport_id  =  T3.id GROUP BY T3.id",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 18.388924100014265,
+      "input_tokens": 25477,
+      "output_tokens": 1619,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "flight_company",
+      "question": "What is the id, name and IATA code of the airport that had most number of flights?",
+      "predicted_sql": "SELECT a.id, a.name, a.IATA FROM airport a JOIN flight f ON a.id = f.airport_id GROUP BY a.id ORDER BY COUNT(f.id) DESC LIMIT 1;",
+      "gold_sql": "SELECT T1.id ,  T1.name ,  T1.IATA FROM airport AS T1 JOIN flight AS T2 ON T1.id  =  T2.airport_id GROUP BY T2.id ORDER BY count(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.444445899993298,
+      "input_tokens": 22441,
+      "output_tokens": 687,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "Find number of products which Sony does not make.",
+      "predicted_sql": "SELECT COUNT(*) FROM Products WHERE Manufacturer != (SELECT Code FROM Manufacturers WHERE Name = 'Sony')",
+      "gold_sql": "SELECT count(DISTINCT name) FROM products WHERE name NOT IN (SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony')",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.567520799988415,
+      "input_tokens": 22096,
+      "output_tokens": 560,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "How many products are not made by Sony?",
+      "predicted_sql": "SELECT COUNT(*) FROM Products WHERE Manufacturer != (SELECT Code FROM Manufacturers WHERE Name = 'Sony')",
+      "gold_sql": "SELECT count(DISTINCT name) FROM products WHERE name NOT IN (SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony')",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.483823600006872,
+      "input_tokens": 22557,
+      "output_tokens": 661,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Return the names of artists and the themes of their exhibitions that had a ticket price higher than average.",
+      "predicted_sql": "SELECT a.Name, e.Theme FROM artist a JOIN exhibition e ON a.Artist_ID = e.Artist_ID WHERE e.Ticket_Price > (SELECT AVG(Ticket_Price) FROM exhibition)",
+      "gold_sql": "SELECT T1.theme ,  T2.name FROM exhibition AS T1 JOIN artist AS T2 ON T1.artist_id  =  T2.artist_id WHERE T1.ticket_price  >  (SELECT avg(ticket_price) FROM exhibition)",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.475960399999167,
+      "input_tokens": 18463,
+      "output_tokens": 630,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Count the number of exhibitions that have had an attendnance of over 100 or a ticket prices under 10.",
+      "predicted_sql": "SELECT COUNT(DISTINCT e.Exhibition_ID) FROM exhibition e LEFT JOIN exhibition_record r ON e.Exhibition_ID = r.Exhibition_ID WHERE e.Ticket_Price < 10 OR r.Attendance > 100",
+      "gold_sql": "SELECT count(*) FROM exhibition_record AS T1 JOIN exhibition AS T2 ON T1.exhibition_id  =  T2.exhibition_id WHERE T1.attendance  >  100 OR T2.ticket_price  <  10",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 10.661037199999555,
+      "input_tokens": 23211,
+      "output_tokens": 847,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "mountain_photos",
+      "question": "What are the names of photos taken with the lens brand 'Sigma' or 'Olympus'?",
+      "predicted_sql": "SELECT p.name FROM photos p JOIN camera_lens c ON p.camera_lens_id = c.id WHERE c.brand IN ('Sigma','Olympus')",
+      "gold_sql": "SELECT T1.name FROM camera_lens AS T1 JOIN photos AS T2 ON T2.camera_lens_id  =  T1.id WHERE T1.brand  =  'Sigma' OR T1.brand  =  'Olympus'",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 9.541273399998317,
+      "input_tokens": 18122,
+      "output_tokens": 569,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "coffee_shop",
+      "question": "Find the ids and names of members who are under age 30 or with black membership card.",
+      "predicted_sql": "SELECT Member_ID, Name FROM member WHERE Age < 30 OR Membership_card = 'Black'",
+      "gold_sql": "SELECT name ,  member_id FROM member WHERE Membership_card  =  'Black' OR age  <  30",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 1,
+      "difficulty": "extra",
+      "latency_seconds": 7.593944299995201,
+      "input_tokens": 18246,
+      "output_tokens": 600,
+      "has_join": false,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "What are the names of the tourist attractions that have parking or shopping as their feature details?",
+      "predicted_sql": "SELECT T.Name\nFROM Tourist_Attractions T\nJOIN Tourist_Attraction_Features TF ON T.Tourist_Attraction_ID = TF.Tourist_Attraction_ID\nJOIN Features F ON TF.Feature_ID = F.Feature_ID\nWHERE F.Feature_Details IN ('parking', 'shopping')",
+      "gold_sql": "SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'park' UNION SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'shopping'",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 10.567063800001051,
+      "input_tokens": 23467,
+      "output_tokens": 843,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "products_for_hire",
+      "question": "What are the id and the amount of refund of the booking that incurred the most times of payments?",
+      "predicted_sql": "SELECT b.booking_id, b.amount_of_refund\nFROM Bookings b JOIN Payments p ON b.booking_id = p.booking_id\nGROUP BY b.booking_id, b.amount_of_refund\nORDER BY COUNT(p.payment_id) DESC\nLIMIT 1;",
+      "gold_sql": "SELECT T1.booking_id ,  T1.amount_of_refund FROM Bookings AS T1 JOIN Payments AS T2 ON T1.booking_id  =  T2.booking_id GROUP BY T1.booking_id ORDER BY count(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.039584899990587,
+      "input_tokens": 18765,
+      "output_tokens": 700,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    }
+  ],
+  "results": [
+    {
+      "db_id": "flight_company",
+      "question": "How many companies operates airlines in each airport?",
+      "predicted_sql": "SELECT a.name, COUNT(*) FROM airport a JOIN flight f ON a.id = f.airport_id GROUP BY a.name",
+      "gold_sql": "SELECT T3.id ,  count(*) FROM operate_company AS T1 JOIN flight AS t2 ON T1.id  =  T2.company_id JOIN airport AS T3 ON T2.airport_id  =  T3.id GROUP BY T3.id",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 18.388924100014265,
+      "input_tokens": 25477,
+      "output_tokens": 1619,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "flight_company",
+      "question": "What is the id, name and IATA code of the airport that had most number of flights?",
+      "predicted_sql": "SELECT a.id, a.name, a.IATA FROM airport a JOIN flight f ON a.id = f.airport_id GROUP BY a.id ORDER BY COUNT(f.id) DESC LIMIT 1;",
+      "gold_sql": "SELECT T1.id ,  T1.name ,  T1.IATA FROM airport AS T1 JOIN flight AS T2 ON T1.id  =  T2.airport_id GROUP BY T2.id ORDER BY count(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.444445899993298,
+      "input_tokens": 22441,
+      "output_tokens": 687,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "Find number of products which Sony does not make.",
+      "predicted_sql": "SELECT COUNT(*) FROM Products WHERE Manufacturer != (SELECT Code FROM Manufacturers WHERE Name = 'Sony')",
+      "gold_sql": "SELECT count(DISTINCT name) FROM products WHERE name NOT IN (SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony')",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.567520799988415,
+      "input_tokens": 22096,
+      "output_tokens": 560,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "manufactory_1",
+      "question": "How many products are not made by Sony?",
+      "predicted_sql": "SELECT COUNT(*) FROM Products WHERE Manufacturer != (SELECT Code FROM Manufacturers WHERE Name = 'Sony')",
+      "gold_sql": "SELECT count(DISTINCT name) FROM products WHERE name NOT IN (SELECT T1.name FROM products AS T1 JOIN manufacturers AS T2 ON T1.Manufacturer  =  T2.code WHERE T2.name  =  'Sony')",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.483823600006872,
+      "input_tokens": 22557,
+      "output_tokens": 661,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Return the names of artists and the themes of their exhibitions that had a ticket price higher than average.",
+      "predicted_sql": "SELECT a.Name, e.Theme FROM artist a JOIN exhibition e ON a.Artist_ID = e.Artist_ID WHERE e.Ticket_Price > (SELECT AVG(Ticket_Price) FROM exhibition)",
+      "gold_sql": "SELECT T1.theme ,  T2.name FROM exhibition AS T1 JOIN artist AS T2 ON T1.artist_id  =  T2.artist_id WHERE T1.ticket_price  >  (SELECT avg(ticket_price) FROM exhibition)",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.475960399999167,
+      "input_tokens": 18463,
+      "output_tokens": 630,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "theme_gallery",
+      "question": "Count the number of exhibitions that have had an attendnance of over 100 or a ticket prices under 10.",
+      "predicted_sql": "SELECT COUNT(DISTINCT e.Exhibition_ID) FROM exhibition e LEFT JOIN exhibition_record r ON e.Exhibition_ID = r.Exhibition_ID WHERE e.Ticket_Price < 10 OR r.Attendance > 100",
+      "gold_sql": "SELECT count(*) FROM exhibition_record AS T1 JOIN exhibition AS T2 ON T1.exhibition_id  =  T2.exhibition_id WHERE T1.attendance  >  100 OR T2.ticket_price  <  10",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 10.661037199999555,
+      "input_tokens": 23211,
+      "output_tokens": 847,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "mountain_photos",
+      "question": "What are the names of photos taken with the lens brand 'Sigma' or 'Olympus'?",
+      "predicted_sql": "SELECT p.name FROM photos p JOIN camera_lens c ON p.camera_lens_id = c.id WHERE c.brand IN ('Sigma','Olympus')",
+      "gold_sql": "SELECT T1.name FROM camera_lens AS T1 JOIN photos AS T2 ON T2.camera_lens_id  =  T1.id WHERE T1.brand  =  'Sigma' OR T1.brand  =  'Olympus'",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 9.541273399998317,
+      "input_tokens": 18122,
+      "output_tokens": 569,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "coffee_shop",
+      "question": "Find the ids and names of members who are under age 30 or with black membership card.",
+      "predicted_sql": "SELECT Member_ID, Name FROM member WHERE Age < 30 OR Membership_card = 'Black'",
+      "gold_sql": "SELECT name ,  member_id FROM member WHERE Membership_card  =  'Black' OR age  <  30",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 1,
+      "difficulty": "extra",
+      "latency_seconds": 7.593944299995201,
+      "input_tokens": 18246,
+      "output_tokens": 600,
+      "has_join": false,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Theme_park",
+      "question": "What are the names of the tourist attractions that have parking or shopping as their feature details?",
+      "predicted_sql": "SELECT T.Name\nFROM Tourist_Attractions T\nJOIN Tourist_Attraction_Features TF ON T.Tourist_Attraction_ID = TF.Tourist_Attraction_ID\nJOIN Features F ON TF.Feature_ID = F.Feature_ID\nWHERE F.Feature_Details IN ('parking', 'shopping')",
+      "gold_sql": "SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'park' UNION SELECT T1.Name FROM Tourist_Attractions AS T1 JOIN Tourist_Attraction_Features AS T2 ON T1.tourist_attraction_id  =  T2.tourist_attraction_id JOIN Features AS T3 ON T2.Feature_ID  =  T3.Feature_ID WHERE T3.feature_Details  =  'shopping'",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 10.567063800001051,
+      "input_tokens": 23467,
+      "output_tokens": 843,
+      "has_join": true,
+      "has_group_by": false,
+      "has_subquery": false,
+      "has_set_op": true
+    },
+    {
+      "db_id": "products_for_hire",
+      "question": "What are the id and the amount of refund of the booking that incurred the most times of payments?",
+      "predicted_sql": "SELECT b.booking_id, b.amount_of_refund\nFROM Bookings b JOIN Payments p ON b.booking_id = p.booking_id\nGROUP BY b.booking_id, b.amount_of_refund\nORDER BY COUNT(p.payment_id) DESC\nLIMIT 1;",
+      "gold_sql": "SELECT T1.booking_id ,  T1.amount_of_refund FROM Bookings AS T1 JOIN Payments AS T2 ON T1.booking_id  =  T2.booking_id GROUP BY T1.booking_id ORDER BY count(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "value_mismatch",
+      "detail": "Same row/column shape, different values.",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 9.039584899990587,
+      "input_tokens": 18765,
+      "output_tokens": 700,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    }
+  ]
+}

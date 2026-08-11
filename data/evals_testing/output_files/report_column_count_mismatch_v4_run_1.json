@@ -1,0 +1,442 @@
+{
+  "meta": {
+    "input_file": "data\\input_files\\failures_column_count_mismatch.json",
+    "pool_seed": 42,
+    "num_dbs": 8,
+    "questions_per_db": "variable -- see per_db_counts",
+    "total_questions": 11,
+    "pool_hardness_breakdown": {
+      "hard": 8,
+      "extra": 3
+    },
+    "prompt_version": "prompt_v4",
+    "num_workers": 4,
+    "generated_at": "2026-08-09T16:01:49.776425+00:00",
+    "log_path": "C:\\Users\\tusha\\Documents\\github Repos\\spider-agent-workbench\\logs\\report_column_count_mismatch_v4_run_1_2026-08-09-16-01-05.jsonl"
+  },
+  "ex_summary": {
+    "total_questions": 11,
+    "total_score": 9,
+    "accuracy": 0.8181818181818182,
+    "by_status": {
+      "match": {
+        "score": 9,
+        "total": 9
+      },
+      "column_count_mismatch": {
+        "score": 0,
+        "total": 2
+      }
+    },
+    "by_db_id": {
+      "music_1": {
+        "score": 2,
+        "total": 2
+      },
+      "candidate_poll": {
+        "score": 1,
+        "total": 1
+      },
+      "apartment_rentals": {
+        "score": 1,
+        "total": 2
+      },
+      "pilot_record": {
+        "score": 1,
+        "total": 1
+      },
+      "tracking_grants_for_research": {
+        "score": 2,
+        "total": 2
+      },
+      "baseball_1": {
+        "score": 1,
+        "total": 1
+      },
+      "perpetrator": {
+        "score": 0,
+        "total": 1
+      },
+      "cre_Drama_Workshop_Groups": {
+        "score": 1,
+        "total": 1
+      }
+    },
+    "by_difficulty": {
+      "extra": {
+        "score": 3,
+        "total": 3
+      },
+      "hard": {
+        "score": 6,
+        "total": 8
+      }
+    }
+  },
+  "em_summary": {
+    "total_questions": 11,
+    "total_score": 3,
+    "accuracy": 0.2727272727272727,
+    "by_difficulty": {
+      "extra": {
+        "score": 0,
+        "total": 3
+      },
+      "hard": {
+        "score": 3,
+        "total": 8
+      }
+    },
+    "by_db_id": {
+      "music_1": {
+        "score": 0,
+        "total": 2
+      },
+      "candidate_poll": {
+        "score": 0,
+        "total": 1
+      },
+      "apartment_rentals": {
+        "score": 0,
+        "total": 2
+      },
+      "pilot_record": {
+        "score": 1,
+        "total": 1
+      },
+      "tracking_grants_for_research": {
+        "score": 1,
+        "total": 2
+      },
+      "baseball_1": {
+        "score": 0,
+        "total": 1
+      },
+      "perpetrator": {
+        "score": 0,
+        "total": 1
+      },
+      "cre_Drama_Workshop_Groups": {
+        "score": 1,
+        "total": 1
+      }
+    }
+  },
+  "feature_summary": {
+    "has_join": {
+      "score": 3,
+      "total": 3,
+      "accuracy": 1.0
+    },
+    "has_group_by": {
+      "score": 8,
+      "total": 10,
+      "accuracy": 0.8
+    },
+    "has_subquery": {
+      "score": 2,
+      "total": 2,
+      "accuracy": 1.0
+    },
+    "has_set_op": {
+      "score": 0,
+      "total": 0,
+      "accuracy": 0.0
+    }
+  },
+  "guardrail_summary": {
+    "by_status": {
+      "column_count_mismatch": 2
+    },
+    "by_difficulty": {
+      "hard": {
+        "column_count_mismatch": 2
+      }
+    }
+  },
+  "operational_summary": {
+    "avg_turns": 6.090909090909091,
+    "avg_latency_seconds": 13.05881732727258,
+    "avg_input_tokens": 20730.18181818182,
+    "avg_output_tokens": 1013.6363636363636,
+    "total_input_tokens": 228032,
+    "total_output_tokens": 11150
+  },
+  "failures": [
+    {
+      "db_id": "apartment_rentals",
+      "question": "What are the top three apartment types in terms of the average room count? Give me the",
+      "predicted_sql": "SELECT apt_type_code, AVG(CAST(room_count AS INTEGER)) FROM Apartments GROUP BY apt_type_code ORDER BY AVG(CAST(room_count AS INTEGER)) DESC LIMIT 3",
+      "gold_sql": "SELECT apt_type_code FROM Apartments GROUP BY apt_type_code ORDER BY avg(room_count) DESC LIMIT 3",
+      "score": 0,
+      "status": "column_count_mismatch",
+      "detail": "gold has 1 columns, predicted has 2",
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 16.404602300011902,
+      "input_tokens": 24714,
+      "output_tokens": 1324,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "perpetrator",
+      "question": "What is the country that has the most perpetrators?",
+      "predicted_sql": "SELECT Country FROM perpetrator GROUP BY Country ORDER BY COUNT(*) DESC LIMIT 1",
+      "gold_sql": "SELECT Country ,  COUNT(*) FROM perpetrator GROUP BY Country ORDER BY COUNT(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "column_count_mismatch",
+      "detail": "gold has 2 columns, predicted has 1",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 10.009023399994476,
+      "input_tokens": 15634,
+      "output_tokens": 523,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    }
+  ],
+  "results": [
+    {
+      "db_id": "music_1",
+      "question": "What are the top 3 artists with the largest number of songs in the language Bangla?",
+      "predicted_sql": "SELECT artist_name FROM song WHERE languages='bangla' GROUP BY artist_name ORDER BY COUNT(*) DESC LIMIT 3",
+      "gold_sql": "SELECT T1.artist_name FROM artist AS T1 JOIN song AS T2 ON T1.artist_name  =  T2.artist_name WHERE T2.languages  =  \"bangla\" GROUP BY T2.artist_name ORDER BY count(*) DESC LIMIT 3",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 11.828554599997005,
+      "input_tokens": 17534,
+      "output_tokens": 1011,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "music_1",
+      "question": "Find the top 3 artists who have the largest number of songs works whose language is Bangla.",
+      "predicted_sql": "SELECT artist_name FROM song WHERE lower(languages) = 'bangla' GROUP BY artist_name ORDER BY COUNT(*) DESC LIMIT 3",
+      "gold_sql": "SELECT T1.artist_name FROM artist AS T1 JOIN song AS T2 ON T1.artist_name  =  T2.artist_name WHERE T2.languages  =  \"bangla\" GROUP BY T2.artist_name ORDER BY count(*) DESC LIMIT 3",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 14.25302790000569,
+      "input_tokens": 24526,
+      "output_tokens": 975,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "candidate_poll",
+      "question": "which gender got the highest average uncertain ratio.",
+      "predicted_sql": "SELECT p.Sex FROM candidate c JOIN people p ON c.People_ID = p.People_ID GROUP BY p.Sex ORDER BY AVG(c.Unsure_rate) DESC LIMIT 1",
+      "gold_sql": "SELECT t1.sex FROM people AS t1 JOIN candidate AS t2 ON t1.people_id  =  t2.people_id GROUP BY t1.sex ORDER BY avg(t2.unsure_rate) DESC LIMIT 1",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "extra",
+      "latency_seconds": 16.80460679999669,
+      "input_tokens": 26239,
+      "output_tokens": 1603,
+      "has_join": true,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "apartment_rentals",
+      "question": "What are the top three apartment types in terms of the average room count? Give me the",
+      "predicted_sql": "SELECT apt_type_code, AVG(CAST(room_count AS INTEGER)) FROM Apartments GROUP BY apt_type_code ORDER BY AVG(CAST(room_count AS INTEGER)) DESC LIMIT 3",
+      "gold_sql": "SELECT apt_type_code FROM Apartments GROUP BY apt_type_code ORDER BY avg(room_count) DESC LIMIT 3",
+      "score": 0,
+      "status": "column_count_mismatch",
+      "detail": "gold has 1 columns, predicted has 2",
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 16.404602300011902,
+      "input_tokens": 24714,
+      "output_tokens": 1324,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "apartment_rentals",
+      "question": "Show the top 3 apartment type codes sorted by the average number of rooms in descending order.",
+      "predicted_sql": "SELECT apt_type_code\nFROM Apartments\nGROUP BY apt_type_code\nORDER BY AVG(CAST(room_count AS INTEGER)) DESC\nLIMIT 3",
+      "gold_sql": "SELECT apt_type_code FROM Apartments GROUP BY apt_type_code ORDER BY avg(room_count) DESC LIMIT 3",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 14.068421000003582,
+      "input_tokens": 20900,
+      "output_tokens": 1394,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "pilot_record",
+      "question": "Show the most common nationality of pilots.",
+      "predicted_sql": "SELECT Nationality FROM pilot GROUP BY Nationality ORDER BY COUNT(*) DESC LIMIT 1",
+      "gold_sql": "SELECT Nationality FROM pilot GROUP BY Nationality ORDER BY COUNT(*) DESC LIMIT 1",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 1,
+      "difficulty": "hard",
+      "latency_seconds": 10.328825799995684,
+      "input_tokens": 18276,
+      "output_tokens": 638,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "What are the details for the projects which were launched by the organization with the most projects?",
+      "predicted_sql": "SELECT project_details FROM Projects WHERE organisation_id = (SELECT organisation_id FROM Projects GROUP BY organisation_id ORDER BY COUNT(*) DESC LIMIT 1)",
+      "gold_sql": "SELECT project_details FROM Projects WHERE organisation_id IN ( SELECT organisation_id FROM Projects GROUP BY organisation_id ORDER BY count(*) DESC LIMIT 1 )",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 7,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 16.88891270000022,
+      "input_tokens": 24710,
+      "output_tokens": 1525,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "tracking_grants_for_research",
+      "question": "Which projects have no outcome? List the project details.",
+      "predicted_sql": "SELECT project_details FROM Projects WHERE project_id NOT IN (SELECT project_id FROM Project_Outcomes)",
+      "gold_sql": "SELECT project_details FROM Projects WHERE project_id NOT IN ( SELECT project_id FROM Project_outcomes )",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 1,
+      "difficulty": "hard",
+      "latency_seconds": 11.144635399992694,
+      "input_tokens": 19439,
+      "output_tokens": 732,
+      "has_join": false,
+      "has_group_by": false,
+      "has_subquery": true,
+      "has_set_op": false
+    },
+    {
+      "db_id": "baseball_1",
+      "question": "List three countries which are the origins of the least players.",
+      "predicted_sql": "SELECT birth_country FROM player GROUP BY birth_country ORDER BY COUNT(*) ASC, birth_country LIMIT 3",
+      "gold_sql": "SELECT birth_country FROM player GROUP BY birth_country ORDER BY count(*) ASC LIMIT 3;",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 10.379670800000895,
+      "input_tokens": 16107,
+      "output_tokens": 708,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "perpetrator",
+      "question": "What is the country that has the most perpetrators?",
+      "predicted_sql": "SELECT Country FROM perpetrator GROUP BY Country ORDER BY COUNT(*) DESC LIMIT 1",
+      "gold_sql": "SELECT Country ,  COUNT(*) FROM perpetrator GROUP BY Country ORDER BY COUNT(*) DESC LIMIT 1",
+      "score": 0,
+      "status": "column_count_mismatch",
+      "detail": "gold has 2 columns, predicted has 1",
+      "turns": 5,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 0,
+      "difficulty": "hard",
+      "latency_seconds": 10.009023399994476,
+      "input_tokens": 15634,
+      "output_tokens": 523,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    },
+    {
+      "db_id": "cre_Drama_Workshop_Groups",
+      "question": "What is the most frequent status of bookings?",
+      "predicted_sql": "SELECT Status_Code FROM Bookings GROUP BY Status_Code ORDER BY COUNT(*) DESC LIMIT 1",
+      "gold_sql": "SELECT Status_Code FROM BOOKINGS GROUP BY Status_Code ORDER BY count(*) DESC LIMIT 1",
+      "score": 1,
+      "status": "match",
+      "detail": null,
+      "turns": 6,
+      "hit_turn_limit": false,
+      "notes": null,
+      "em_score": 1,
+      "difficulty": "hard",
+      "latency_seconds": 11.53670989999955,
+      "input_tokens": 19953,
+      "output_tokens": 717,
+      "has_join": false,
+      "has_group_by": true,
+      "has_subquery": false,
+      "has_set_op": false
+    }
+  ]
+}
